@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Sistema Moderno</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icon-192x192.png">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Cores */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #e74c3c;
+            --text-color-primary: #333;
+            --text-color-secondary: #eee;
+            --bg-color-primary: #f4f6f8;
+            --bg-color-secondary: #fff;
+            --border-color: #ddd;
+            --hover-primary: #2980b9;
+            --hover-secondary: #c0392b;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos globais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color-primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color-primary);
+        }
+
+        .container {
+            background-color: var(--bg-color-secondary);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px var(--shadow-color);
+            padding: 30px;
+            width: 95%;
+            max-width: 900px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Tela de Login */
+        .login-container {
+            text-align: center;
+        }
+
+        .login-title {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-color-primary);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Cor primária em RGB */
+        }
+
+        .btn {
+            padding: 14px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-color-secondary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--hover-primary);
+        }
+
+        .link-signup {
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+
+        .link-signup:hover {
+            text-decoration: underline;
+        }
+
+        /* Chat Box */
+        .chat-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .chat-box {
+            background-color: var(--bg-color-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            resize: none;
+            background-color: #f9f9f9;
+            color: var(--text-color-primary);
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        .chat-button {
+            margin-top: 20px;
+            padding: 14px;
+            font-size: 16px;
+            background-color: #2ecc71; /* Cor verde para enviar */
+            color: var(--text-color-secondary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .chat-button:hover {
+            background-color: #27ae60;
+        }
+
+        .response-area-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .response-area {
+            flex-grow: 1;
+            background-color: #f9f9f9;
+            color: var(--text-color-primary);
+            padding: 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .response-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .response-actions button {
+            padding: 10px 16px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: var(--bg-color-secondary);
+            color: var(--text-color-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 1px 2px var(--shadow-color);
+        }
+
+        .response-actions button:hover {
+            background-color: #eee;
+        }
+
+        .response-actions button i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container login-container" id="loginContainer">
+        <h2 class="login-title"><i class="fas fa-user-circle"></i> Login </h2>
+        <div class="form-group">
+            <label for="username"><i class="fas fa-user"></i>Usuário:</label>
+            <input type="text" id="username" placeholder="Digite seu nome de usuário">
+        </div>
+        <div class="form-group">
+            <label for="password"><i class="fas fa-lock"></i> Senha:</label>
+            <input type="password" id="password" placeholder="Digite sua senha">
+        </div>
+        <button class="btn btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login </button>
+        <p><a id="linkRegister" class="link-signup"><i class="fas fa-user-plus"></i> Ainda não tem acesso? Registre-se aqui</a></p>
+    </div>
+
+    <div class="container login-container" id="registerContainer" style="display: none;">
+        <h2 class="login-title"><i class="fas fa-user-plus"></i> Cadastro </h2>
+        <div class="form-group">
+            <label for="newUsername"><i class="fas fa-user"></i> Usuário:</label>
+            <input type="text" id="newUsername" placeholder="Escolha um nome de usuário">
+        </div>
+        <div class="form-group">
+            <label for="newPassword"><i class="fas fa-lock"></i> Senha:</label>
+            <input type="password" id="newPassword" placeholder="Escolha uma senha">
+        </div>
+        <button class="btn btn-primary" onclick="register()"><i class="fas fa-user-plus"></i> Cadastrar </button>
+        <p><a id="linkLogin" class="link-signup"><i class="fas fa-sign-in-alt"></i> Já tem login? Acesse aqui </a></p>
+    </div>    
+
+    <div class="container chat-container" id="chatContainer" style="display: none;">
+        <div class="chat-box">
+            <textarea class="chat-input" id="prompt" placeholder="Digite sua pergunta..."></textarea>
+            <button class="btn chat-button" onclick="enviar()"><i class="fas fa-paper-plane"></i> Gerar Testes</button>
+        </div>
+        <div class="chat-box">
+            <div class="response-area-container">
+                <div class="response-area" id="resposta">Resposta aparecerá aqui...</div>
+                <div class="response-actions">
+                    <button class="btn" onclick="copiarResposta()"><i class="fas fa-copy"></i> Copiar</button>
+                    <button class="btn" onclick="gerarAutomacao()"><i class="fas fa-code"></i> Gerar Automação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginContainer = document.getElementById('loginContainer');
+        const chatContainer = document.getElementById('chatContainer');
+        const respostaEl = document.getElementById('resposta');
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch("http://localhost:8000/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) { // Verifica se o status da resposta está no intervalo 200-299 (sucesso)
+                    loginContainer.style.display = 'none';
+                    chatContainer.style.display = 'flex';
+                    // Opcional: Salvar o token de acesso para futuras requisições
+                    // localStorage.setItem('accessToken', data.access_token);
+                } else {
+                    alert(data.detail || 'Erro ao realizar login.'); // Exibe a mensagem de erro da API
+                }
+            } catch (e) {
+                alert("Erro ao conectar com o servidor.");
+                console.error(e);
+            }
+        }
+
+        async function enviar() {
+            const prompt = document.getElementById("prompt").value;
+            respostaEl.innerText = "Pensando...";
+
+            try {
+                const response = await fetch("http://localhost:8000/generate_bdd", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_story: prompt })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.bdd_scenarios) {
+                        respostaEl.innerText = data.bdd_scenarios;
+                    } else if (data.error) {
+                        respostaEl.innerText = "Erro: " + (data.error.message || data.error);
+                    } else {
+                        respostaEl.innerText = "Resposta inesperada da API.";
+                    }
+                } else {
+                    const errorData = await response.json();
+                    respostaEl.innerText = "Erro na requisição: " + (errorData.detail || response.statusText);
+                }
+            } catch (e) {
+                respostaEl.innerText = "Erro ao conectar com o servidor.";
+                console.error(e);
+            }
+        }
+
+        function copiarResposta() {
+            const textoParaCopiar = respostaEl.innerText;
+            navigator.clipboard.writeText(textoParaCopiar).then(() => {
+                alert('Resposta copiada para a área de transferência!');
+            }).catch(err => {
+                console.error('Erro ao copiar texto: ', err);
+                alert('Não foi possível copiar a resposta.');
+            });
+        }
+
+        function gerarAutomacao() {
+            const textoParaAnalisar = respostaEl.innerText;
+            alert('Funcionalidade de gerar código de automação será implementada aqui.\nTexto a ser analisado:\n' + textoParaAnalisar);
+            // Aqui você chamaria outra função ou endpoint para processar o texto
+            // e gerar o código de automação.
+        }
+
+
+        const registerContainer = document.getElementById('registerContainer');
+const linkRegister = document.getElementById('linkRegister');
+const linkLogin = document.getElementById('linkLogin');
+
+// Alternar entre login e cadastro
+linkRegister.addEventListener('click', () => {
+    loginContainer.style.display = 'none';
+    registerContainer.style.display = 'block';
+});
+
+linkLogin.addEventListener('click', () => {
+    registerContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
+});
+
+// Cadastro de novo usuário
+async function register() {
+    const username = document.getElementById('newUsername').value;
+    const password = document.getElementById('newPassword').value;
+
+    try {
+        const response = await fetch("http://localhost:8000/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message);
+            // Volta para login
+            registerContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+        } else {
+            alert(data.detail || 'Erro ao registrar usuário.');
+        }
+    } catch (e) {
+        alert("Erro ao conectar com o servidor.");
+        console.error(e);
+    }
+}
+
+    </script>
+
+</body>
+</html>
