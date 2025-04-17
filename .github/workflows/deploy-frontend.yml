@@ -26,7 +26,7 @@ jobs:
       - name: Upload dos arquivos do site
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./
+          path: . # ou ./public se for o diretório correto
 
       - name: Publicar no GitHub Pages
         uses: actions/deploy-pages@v2
