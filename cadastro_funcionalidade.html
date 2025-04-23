@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Funcionalidades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 p-6">
+
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Funcionalidades</h1>
+        <button onclick="abrirModalCadastro()" class="bg-blue-600 text-white px-4 py-2 rounded">Nova Funcionalidade</button>
+    </div>
+
+    <table class="w-full bg-white shadow-md rounded overflow-hidden">
+        <thead class="bg-blue-600 text-white">
+            <tr>
+                <th class="p-3 text-left">Funcionalidade</th>
+                <th class="p-3 text-left">Prioridade</th>
+                <th class="p-3 text-left">Relator</th>
+                <th class="p-3 text-left">Criado em</th>
+                <th class="p-3">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-funcionalidades" class="divide-y divide-gray-200">
+            </tbody>
+    </table>
+
+    <div id="modal-cadastro" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
+        <div class="bg-white p-6 rounded shadow-md w-full max-w-lg">
+            <h2 class="text-xl font-semibold mb-4">Nova Funcionalidade</h2>
+            <form id="formFuncionalidade">
+                <input class="w-full mb-2 p-2 border rounded" placeholder="Funcionalidade" name="nome" required>
+                <input class="w-full mb-2 p-2 border rounded" placeholder="Relator" name="relator" required>
+                <select class="w-full mb-2 p-2 border rounded" name="prioridade" required>
+                    <option value="Alta">Alta</option>
+                    <option value="Média">Média</option>
+                    <option value="Baixa">Baixa</option>
+                </select>
+                <textarea class="w-full mb-2 p-2 border rounded" placeholder="Descrição" name="descricao"></textarea>
+                <input type="file" class="mb-2" name="imagem">
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="fecharModalCadastro()" class="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-visualizar" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
+        <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+            <h2 class="text-xl font-semibold mb-4">Detalhes da Funcionalidade</h2>
+            <div id="detalhes-funcionalidade">
+                <p><strong>Nome:</strong> <span id="visualizar-nome"></span></p>
+                <p><strong>Relator:</strong> <span id="visualizar-relator"></span></p>
+                <p><strong>Prioridade:</strong> <span id="visualizar-prioridade"></span></p>
+                <p><strong>Descrição:</strong> <span id="visualizar-descricao"></span></p>
+                <p><strong>Criado em:</strong> <span id="visualizar-criado_em"></span></p>
+                <p><strong>Anexo:</strong> <span id="visualizar-imagem-link"></span></p>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button type="button" onclick="fecharModalVisualizar()" class="px-4 py-2 bg-gray-300 rounded">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modalCadastro = document.getElementById('modal-cadastro');
+        const modalVisualizar = document.getElementById('modal-visualizar');
+        const tabela = document.getElementById('tabela-funcionalidades');
+        const detalhesFuncionalidade = document.getElementById('detalhes-funcionalidade');
+        const visualizarImagemLink = document.getElementById('visualizar-imagem-link');
+
+        function abrirModalCadastro() {
+            modalCadastro.classList.remove('hidden');
+        }
+
+        function fecharModalCadastro() {
+            modalCadastro.classList.add('hidden');
+        }
+
+        function abrirModalVisualizar(funcionalidade) {
+          console.log("Função abrirModalVisualizar chamada:", funcionalidade);
+          console.log("ID do modal-visualizar:", document.getElementById('modal-visualizar'));
+          console.log("Classe do modal antes:", document.getElementById('modal-visualizar').classList);
+            document.getElementById('visualizar-nome').textContent = funcionalidade.nome;
+            document.getElementById('visualizar-relator').textContent = funcionalidade.relator;
+            document.getElementById('visualizar-prioridade').textContent = funcionalidade.prioridade;
+            document.getElementById('visualizar-descricao').textContent = funcionalidade.descricao || 'Nenhuma descrição';
+            document.getElementById('visualizar-criado_em').textContent = new Date(funcionalidade.criado_em).toLocaleDateString();
+
+            if (funcionalidade.imagem) {
+                const link = document.createElement('a');
+                link.href = `http://localhost:8000/uploads/${funcionalidade.imagem.split('/').pop()}`;
+                link.textContent = funcionalidade.imagem.split('/').pop();
+                link.target = '_blank';
+                visualizarImagemLink.innerHTML = '';
+                visualizarImagemLink.appendChild(link);
+            } else {
+                visualizarImagemLink.textContent = 'Nenhum anexo';
+            }
+
+            modalVisualizar.classList.remove('hidden');
+        }
+
+        function fecharModalVisualizar() {
+            modalVisualizar.classList.add('hidden');
+        }
+
+        async function carregarFuncionalidades() {
+            const res = await fetch("http://localhost:8000/funcionalidades");
+            const funcionalidades = await res.json();
+            tabela.innerHTML = funcionalidades.map(f => `
+                <tr>
+                    <td class="p-3">${f.nome}</td>
+                    <td class="p-3">${f.prioridade}</td>
+                    <td class="p-3">${f.relator}</td>
+                    <td class="p-3">${new Date(f.criado_em).toLocaleDateString()}</td>
+                    <td class="p-3">
+                        <button onclick='abrirModalVisualizar(${JSON.stringify(f)})' class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded">Visualizar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('formFuncionalidade').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = new FormData(e.target);
+            await fetch("http://localhost:8000/funcionalidades", {
+                method: "POST",
+                body: form
+            });
+            e.target.reset();
+            fecharModalCadastro();
+            carregarFuncionalidades();
+        });
+
+        window.onload = carregarFuncionalidades;
+    </script>
+
+</body>
+</html>
