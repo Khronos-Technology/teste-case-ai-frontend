@@ -4,6 +4,69 @@
     <meta charset="UTF-8">
     <title>Cadastro de Funcionalidades</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos adicionais para o layout */
+        #visualizacao-detalhada {
+            display: none; /* Inicialmente oculto */
+            flex-direction: row;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        #detalhes-funcionalidade-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        #chat-gpt-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        #chat-gpt-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        #chat-gpt-container button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #chat-gpt-container button:hover {
+            background-color: #45a049;
+        }
+
+        .fechar-visualizacao {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .fechar-visualizacao:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 text-gray-800 p-6">
 
@@ -30,8 +93,10 @@
         <div class="bg-white p-6 rounded shadow-md w-full max-w-lg">
             <h2 class="text-xl font-semibold mb-4">Nova Funcionalidade</h2>
             <form id="formFuncionalidade">
+                <input type="hidden" name="id">
+                <input type="hidden" name="imagem_existente">
                 <input class="w-full mb-2 p-2 border rounded" placeholder="Funcionalidade" name="nome" required>
-                <input class="w-full mb-2 p-2 border rounded" placeholder="Relator" name="relator" required>
+                <input class="w-full mb-2 p-2 border rounded" placeholder="Relator" name="relator" id="relator" required>
                 <select class="w-full mb-2 p-2 border rounded" name="prioridade" required>
                     <option value="Alta">Alta</option>
                     <option value="Média">Média</option>
@@ -47,8 +112,8 @@
         </div>
     </div>
 
-    <div id="modal-visualizar" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
-        <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <div id="visualizacao-detalhada" class="hidden">
+        <div id="detalhes-funcionalidade-container">
             <h2 class="text-xl font-semibold mb-4">Detalhes da Funcionalidade</h2>
             <div id="detalhes-funcionalidade">
                 <p><strong>Nome:</strong> <span id="visualizar-nome"></span></p>
@@ -58,20 +123,43 @@
                 <p><strong>Criado em:</strong> <span id="visualizar-criado_em"></span></p>
                 <p><strong>Anexo:</strong> <span id="visualizar-imagem-link"></span></p>
             </div>
-            <div class="flex justify-end mt-4">
-                <button type="button" onclick="fecharModalVisualizar()" class="px-4 py-2 bg-gray-300 rounded">Fechar</button>
-            </div>
+            <button onclick="fecharVisualizacaoDetalhada()" class="fechar-visualizacao">Fechar Detalhes</button>
+        </div>
+        <div id="chat-gpt-container">
+            <h2 class="text-xl font-semibold mb-4">Prompt ChatGPT</h2>
+            <textarea id="prompt-visualizacao" placeholder="Digite seu prompt relacionado a esta funcionalidade..." readonly></textarea>
+            <button onclick="enviarPromptVisualizacao()">Gerar Casos de Teste</button>
+            <div id="resposta-visualizacao" class="mt-4 p-3 border rounded bg-gray-100">A resposta aparecerá aqui...</div>
         </div>
     </div>
 
     <script>
         const modalCadastro = document.getElementById('modal-cadastro');
-        const modalVisualizar = document.getElementById('modal-visualizar');
+        const visualizacaoDetalhada = document.getElementById('visualizacao-detalhada');
+        const detalhesFuncionalidadeContainer = document.getElementById('detalhes-funcionalidade');
         const tabela = document.getElementById('tabela-funcionalidades');
-        const detalhesFuncionalidade = document.getElementById('detalhes-funcionalidade');
+        const visualizarNome = document.getElementById('visualizar-nome');
+        const visualizarRelator = document.getElementById('visualizar-relator');
+        const visualizarPrioridade = document.getElementById('visualizar-prioridade');
+        const visualizarDescricao = document.getElementById('visualizar-descricao');
+        const visualizarCriadoEm = document.getElementById('visualizar-criado_em');
         const visualizarImagemLink = document.getElementById('visualizar-imagem-link');
+        const promptVisualizacaoInput = document.getElementById('prompt-visualizacao');
+        const respostaVisualizacaoDiv = document.getElementById('resposta-visualizacao');
+        const formFuncionalidade = document.getElementById('formFuncionalidade');
+        const modalTitle = document.querySelector('#modal-cadastro h2');
+        const salvarButton = document.querySelector('#formFuncionalidade button[type="submit"]');
+        const idFuncionalidadeEdicaoInput = formFuncionalidade.querySelector('[name="id"]');
 
         function abrirModalCadastro() {
+            modalTitle.textContent = 'Nova Funcionalidade';
+            salvarButton.textContent = 'Salvar';
+            formFuncionalidade.reset();
+            idFuncionalidadeEdicaoInput.value = ''; // Limpa o ID para novo cadastro
+            const imagemExistenteInput = formFuncionalidade.querySelector('[name="imagem_existente"]');
+            if (imagemExistenteInput) {
+                imagemExistenteInput.remove();
+            }
             modalCadastro.classList.remove('hidden');
         }
 
@@ -79,15 +167,14 @@
             modalCadastro.classList.add('hidden');
         }
 
-        function abrirModalVisualizar(funcionalidade) {
-          console.log("Função abrirModalVisualizar chamada:", funcionalidade);
-          console.log("ID do modal-visualizar:", document.getElementById('modal-visualizar'));
-          console.log("Classe do modal antes:", document.getElementById('modal-visualizar').classList);
-            document.getElementById('visualizar-nome').textContent = funcionalidade.nome;
-            document.getElementById('visualizar-relator').textContent = funcionalidade.relator;
-            document.getElementById('visualizar-prioridade').textContent = funcionalidade.prioridade;
-            document.getElementById('visualizar-descricao').textContent = funcionalidade.descricao || 'Nenhuma descrição';
-            document.getElementById('visualizar-criado_em').textContent = new Date(funcionalidade.criado_em).toLocaleDateString();
+        function abrirVisualizacaoDetalhada(funcionalidade) {
+            console.log("Função abrirVisualizacaoDetalhada chamada:", funcionalidade);
+            console.log("Elemento visualizacaoDetalhada:", visualizacaoDetalhada);
+            visualizarNome.textContent = funcionalidade.nome;
+            visualizarRelator.textContent = funcionalidade.relator;
+            visualizarPrioridade.textContent = funcionalidade.prioridade;
+            visualizarDescricao.textContent = funcionalidade.descricao || 'Nenhuma descrição';
+            visualizarCriadoEm.textContent = new Date(funcionalidade.criado_em).toLocaleDateString();
 
             if (funcionalidade.imagem) {
                 const link = document.createElement('a');
@@ -100,11 +187,40 @@
                 visualizarImagemLink.textContent = 'Nenhum anexo';
             }
 
-            modalVisualizar.classList.remove('hidden');
+            promptVisualizacaoInput.value = funcionalidade.descricao || '';
+            visualizacaoDetalhada.style.display = 'flex';
         }
 
-        function fecharModalVisualizar() {
-            modalVisualizar.classList.add('hidden');
+        function fecharVisualizacaoDetalhada() {
+            visualizacaoDetalhada.style.display = 'none';
+        }
+
+        function abrirModalEdicao(funcionalidade) {
+            modalTitle.textContent = 'Editar Funcionalidade';
+            salvarButton.textContent = 'Atualizar';
+            formFuncionalidade.reset();
+
+            formFuncionalidade.querySelector('[name="nome"]').value = funcionalidade.nome;
+            formFuncionalidade.querySelector('[name="relator"]').value = funcionalidade.relator;
+            formFuncionalidade.querySelector('[name="prioridade"]').value = funcionalidade.prioridade;
+            formFuncionalidade.querySelector('[name="descricao"]').value = funcionalidade.descricao || '';
+            idFuncionalidadeEdicaoInput.value = funcionalidade.id || '';
+
+            // Verifica se a funcionalidade tem uma imagem e adiciona/atualiza o campo oculto com o nome
+            let imagemExistenteInput = formFuncionalidade.querySelector('[name="imagem_existente"]');
+            if (funcionalidade.imagem) {
+                if (!imagemExistenteInput) {
+                    imagemExistenteInput = document.createElement('input');
+                    imagemExistenteInput.type = 'hidden';
+                    imagemExistenteInput.name = 'imagem_existente';
+                    formFuncionalidade.appendChild(imagemExistenteInput);
+                }
+                imagemExistenteInput.value = funcionalidade.imagem.split('/').pop();
+            } else if (imagemExistenteInput) {
+                imagemExistenteInput.remove(); // Remove o campo oculto se não houver imagem
+            }
+
+            modalCadastro.classList.remove('hidden');
         }
 
         async function carregarFuncionalidades() {
@@ -117,7 +233,8 @@
                     <td class="p-3">${f.relator}</td>
                     <td class="p-3">${new Date(f.criado_em).toLocaleDateString()}</td>
                     <td class="p-3">
-                        <button onclick='abrirModalVisualizar(${JSON.stringify(f)})' class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded">Visualizar</button>
+                        <button onclick='abrirVisualizacaoDetalhada(${JSON.stringify(f)})' class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded mr-2">Visualizar</button>
+                        <button onclick='abrirModalEdicao(${JSON.stringify(f)})' class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-2 rounded">Editar</button>
                     </td>
                 </tr>
             `).join('');
@@ -126,14 +243,56 @@
         document.getElementById('formFuncionalidade').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = new FormData(e.target);
-            await fetch("http://localhost:8000/funcionalidades", {
-                method: "POST",
+            const idEdicao = form.get('id');
+            let url = "http://localhost:8000/funcionalidades";
+            let method = 'POST';
+
+            if (idEdicao) {
+                url = `http://localhost:8000/funcionalidades/${idEdicao}`;
+                method = 'PUT';
+            }
+
+            const response = await fetch(url, {
+                method: method,
                 body: form
             });
-            e.target.reset();
-            fecharModalCadastro();
-            carregarFuncionalidades();
+
+            if (response.ok) {
+                e.target.reset();
+                fecharModalCadastro();
+                carregarFuncionalidades();
+                alert(`Funcionalidade ${idEdicao ? 'atualizada' : 'cadastrada'} com sucesso!`);
+            } else {
+                const errorData = await response.json();
+                alert(`Erro ao ${idEdicao ? 'atualizar' : 'cadastrar'} funcionalidade: ${errorData.detail || response.statusText}`);
+                console.error(errorData);
+            }
         });
+
+        async function enviarPromptVisualizacao() {
+            const prompt = promptVisualizacaoInput.value;
+            respostaVisualizacaoDiv.textContent = "Pensando...";
+
+            try {
+                // Adapte a URL e a estrutura do body conforme a sua API do ChatGPT
+                const response = await fetch("http://localhost:8000/generate_bdd", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_story: prompt }) // Ou outra estrutura esperada pela sua API
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    respostaVisualizacaoDiv.textContent = data.bdd_scenarios || "Resposta gerada.";
+                } else {
+                    respostaVisualizacaoDiv.textContent = `Erro na requisição: ${data.detail || response.statusText}`;
+                }
+            } catch (error) {
+                respostaVisualizacaoDiv.textContent = "Erro ao comunicar com o servidor.";
+                console.error(error);
+            }
+        }
 
         window.onload = carregarFuncionalidades;
     </script>
