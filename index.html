@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>testcase AI</title>
+    <title>testcase AI - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* Cores baseadas na imagem */
@@ -83,13 +83,14 @@
             text-align: left;
         }
 
-        .form-group label {
+        /* Removido o estilo para label, já que não haverá mais labels explícitos */
+        /* .form-group label {
             display: block;
             margin-bottom: 8px;
             color: var(--text-color-primary);
             font-weight: bold;
             font-size: 0.9em;
-        }
+        } */
 
         .form-group input {
             width: 100%;
@@ -162,6 +163,13 @@
         .signup-link a:hover {
             text-decoration: underline;
         }
+
+        .error-message { /* Adicionado estilo para a mensagem de erro */
+            color: #ef5350; /* Vermelho claro para mensagens de erro */
+            margin-top: 15px;
+            font-size: 0.9em;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -176,21 +184,29 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <input type="text" id="username" placeholder="Email">
-        </div>
-        <div class="form-group">
-            <input type="password" id="password" placeholder="Senha">
-        </div>
-        <button class="btn btn-primary" onclick="login()">Sign in</button>
+        <form id="loginForm">
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Senha" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
         <p class="forgot-password"><a href="#">Forgot password?</a></p>
         <p class="signup-link">Don't have an account? <a href="#">Sign up</a></p>
+        <div id="loginError" class="error-message"></div>
     </div>
 
     <script>
-        async function login() {
+        // Adicionando um event listener para o evento 'submit' do formulário
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Previne o comportamento padrão de recarregar a página ao enviar o formulário
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const loginErrorDiv = document.getElementById('loginError'); // Pega o div de erro
+            loginErrorDiv.textContent = ''; // Limpa qualquer mensagem de erro anterior
 
             try {
                 const response = await fetch("http://localhost:8000/login", {
@@ -199,19 +215,21 @@
                     body: JSON.stringify({ username, password })
                 });
 
-                const data = await response.json();
+                const data = await await response.json(); // Consome a resposta JSON
 
                 if (response.ok) {
-                    window.location.href = "cadastro_funcionalidade.html";
+                    // Removido o alert para uma experiência de usuário mais fluida
+                    // alert(data.message);
+                    window.location.href = "cadastro_funcionalidade.html"; // Redireciona para a página de funcionalidades
                 } else {
-                    alert(data.detail || 'Error during login.');
+                    // Exibe a mensagem de erro recebida do backend
+                    loginErrorDiv.textContent = data.detail || 'Erro no login. Verifique suas credenciais.';
                 }
-            } catch (e) {
-                alert("Error connecting to the server.");
-                console.error(e);
+            } catch (error) {
+                console.error("Erro ao conectar com o servidor:", error);
+                loginErrorDiv.textContent = 'Erro ao conectar com o servidor. Tente novamente mais tarde.';
             }
-        }
+        });
     </script>
-
 </body>
 </html>

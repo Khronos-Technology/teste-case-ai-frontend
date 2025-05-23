@@ -5,373 +5,92 @@
     <title>Funcionalidades</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos gerais */
-        body {
-            font-family: sans-serif;
-            background-color: #f3f4f6; /* Cor de fundo similar */
-            color: #374151; /* Cor do texto principal */
-            padding: 1rem;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-        }
-
-        button {
-            font-weight: bold;
-            border-radius: 0.375rem;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-        }
-
-        .bg-blue-600 {
-            background-color: #2563eb; /* Azul principal */
-        }
-
-        .text-white {
-            color: #ffffff;
-        }
-
-        .bg-gray-300 {
-            background-color: #d1d5db; /* Cinza claro */
-            color: #374151;
-        }
-
-        .bg-yellow-500 {
-            background-color: #facc15; /* Amarelo para editar */
-            color: #374151;
-        }
-
-        .hover\:bg-gray-400:hover {
-            background-color: #9ca3af;
-        }
-
-        .hover\:bg-yellow-600:hover {
-            background-color: #eab308;
-        }
-
-        .rounded {
-            border-radius: 0.375rem;
-        }
-
-        .shadow-md {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .overflow-hidden {
-            overflow: hidden;
-        }
-
-        .divide-y > :not([hidden]) ~ :not([hidden]) {
-            border-top-width: 1px;
-            border-color: #e5e7eb; /* Cor da linha divisória */
-        }
-
-        .p-3 {
-            padding: 0.75rem;
-        }
-
-        .text-left {
-            text-align: left;
-        }
-
-        .w-full {
-            width: 100%;
-        }
-
-        .max-w-lg {
-            max-width: 32rem; /* Ajuste conforme necessário */
-        }
-
-        .fixed {
-            position: fixed;
-        }
-
-        .inset-0 {
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-        }
-
-        .bg-black {
-            background-color: #000000;
-        }
-
-        .bg-opacity-50 {
-            opacity: 0.5;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .flex {
-            display: flex;
-        }
-
-        .justify-center {
-            justify-content: center;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-
-        .gap-2 {
-            gap: 0.5rem;
-        }
-
-        .font-semibold {
-            font-weight: 600;
-        }
-
-        .text-xl {
-            font-size: 1.25rem;
-        }
-
-        .border {
-            border-width: 1px;
-            border-color: #d1d5db;
-        }
-
-        .bg-white {
-            background-color: #ffffff;
-        }
-
-        .p-6 {
-            padding: 1.5rem;
-        }
-
-        /* Estilos específicos para a barra superior */
-        .top-bar {
-            background-color: #1e3a8a; /* Azul mais escuro da barra superior */
-            color: #ffffff;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-radius: 0.375rem; /* Opcional: se quiser bordas arredondadas na barra superior */
-        }
-
-        .top-bar-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
-
-        .top-bar-actions button {
-            margin-left: 0.5rem;
-            background-color: #3b82f6; /* Um tom de azul mais claro para os botões da barra */
-        }
-
-        /* Estilos para os botões de navegação */
-        .navigation-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .navigation-buttons button {
-            background-color: #e0f2fe; /* Azul bem claro para os botões de navegação */
-            color: #0b5394; /* Texto azul escuro */
-            padding: 0.5rem 1rem;
-            border: 1px solid #81d4fa; /* Borda azul clara */
-            border-radius: 0.375rem;
-            font-weight: normal;
-        }
-
-        .navigation-buttons button.active {
-            background-color: #0b5394; /* Azul escuro para o botão ativo */
-            color: #ffffff;
-            border-color: #0b5394;
-        }
-
-        /* Estilos para a lista de casos de teste */
-        .test-case-list-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 0.75rem;
-        }
-
-        /* Estilos para a tabela de funcionalidades (adaptado da sua tabela) */
-        table {
-            width: 100%;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 0.375rem;
-            overflow: hidden;
-            border-collapse: collapse; /* Adicionado para evitar espaçamento entre as bordas */
-        }
-
-        thead {
-            background-color: #3b82f6; /* Azul para o cabeçalho da tabela */
-            color: #ffffff;
-        }
-
-        th {
-            padding: 0.75rem;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        td {
-            padding: 0.75rem;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f9fafb; /* Cor de fundo para linhas pares */
-        }
-
-        /* Estilos adicionais para visualização detalhada e chat (mantidos) */
-        #visualizacao-detalhada {
-            display: none;
-            flex-direction: row;
-            gap: 1.25rem;
-            margin-top: 1.25rem;
-        }
-
-        #detalhes-funcionalidade-container,
-        #chat-gpt-container {
-            background-color: white;
-            padding: 1.25rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            flex: 1;
-        }
-
-        #chat-gpt-container textarea {
-            width: 100%;
-            padding: 0.625rem;
-            margin-bottom: 0.625rem;
-            border: 1px solid #ccc;
-            border-radius: 0.25rem;
-            box-sizing: border-box;
-            resize: vertical;
-        }
-
-        #chat-gpt-container button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 0.625rem 0.9375rem;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-        }
-
-        #chat-gpt-container button:hover {
-            background-color: #45a049;
-        }
-
-        .fechar-visualizacao {
-            background-color: #f44336;
-            color: white;
-            padding: 0.5rem 0.75rem;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            margin-top: 0.625rem;
-            display: inline-block;
-        }
-
-        .fechar-visualizacao:hover {
-            background-color: #d32f2f;
-        }
-
-        #resposta-visualizacao {
-            margin-top: 0.625rem;
-            padding: 0.625rem;
-            border: 1px solid #ccc;
-            border-radius: 0.25rem;
-            background-color: #f9f9f9;
-            white-space: pre-wrap;
-            overflow-y: auto;
-            max-height: 18.75rem; /* 300px */
+        .imagem-preview {
+            font-size: 0.875rem; /* Equivalente a text-sm no Tailwind */
+            color: #6b7280; /* Equivalente a text-gray-500 no Tailwind */
+            margin-top: 0.25rem; /* Equivalente a mt-1 no Tailwind */
         }
     </style>
 </head>
+
 <body class="bg-gray-100 text-gray-800 p-6">
-
-    <div class="top-bar">
-        <h1 class="top-bar-title">testcaseAI</h1>
-        <div class="top-bar-actions">
-            <span>👤</span> <button>⚙️</button> </div>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Funcionalidades</h2>
+        <button title="Nova Funcionalidade" onclick="abrirModalCadastro()" class="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+        </button>
     </div>
 
-    <div class="navigation-buttons">
-        <button class="active">Casos de teste</button>
-        <button>Área de trabalho</button>
-        <button>Testes em execução</button>
-    </div>
+    <h3 class="text-lg font-semibold mb-2">Lista de Casos de teste</h3>
 
-    <div class="flex justify-between items-center mt-4">
-        <h1 class="text-2xl font-bold">Funcionalidades</h1>
-        <button onclick="abrirModalCadastro()" class="bg-blue-600 text-white px-4 py-2 rounded">Nova Funcionalidade</button>
-    </div>
-
-    <h2 class="test-case-list-title">Lista de Casos de teste</h2>
-
-    <table class="w-full bg-white shadow-md rounded overflow-hidden">
-        <thead class="bg-blue-600 text-white">
+    <table class="w-full bg-white shadow-md rounded-md overflow-hidden">
+        <thead class="bg-blue-500 text-white">
             <tr>
                 <th class="p-3 text-left">Funcionalidade</th>
                 <th class="p-3 text-left">Prioridade</th>
                 <th class="p-3 text-left">Relator</th>
                 <th class="p-3 text-left">Criado em</th>
-                <th class="p-3">Ações</th>
+                <th class="p-3 text-center">Ações</th>
             </tr>
         </thead>
         <tbody id="tabela-funcionalidades" class="divide-y divide-gray-200">
-            </tbody>
+        </tbody>
     </table>
 
-    <div id="modal-cadastro" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
-        <div class="bg-white p-6 rounded shadow-md w-full max-w-lg">
+    <div id="modal-cadastro" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center">
+        <div class="bg-white p-6 rounded-md shadow-lg w-full max-w-lg">
             <h2 class="text-xl font-semibold mb-4">Nova Funcionalidade</h2>
-            <form id="formFuncionalidade">
+            <form id="formFuncionalidade" class="space-y-4">
                 <input type="hidden" name="id">
                 <input type="hidden" name="imagem_existente">
-                <input class="w-full mb-2 p-2 border rounded" placeholder="Funcionalidade" name="nome" required>
-                <input class="w-full mb-2 p-2 border rounded" placeholder="Relator" name="relator" id="relator" required>
-                <select class="w-full mb-2 p-2 border rounded" name="prioridade" required>
-                    <option value="Alta">Alta</option>
-                    <option value="Média">Média</option>
-                    <option value="Baixa">Baixa</option>
-                </select>
-                <textarea class="w-full mb-2 p-2 border rounded" placeholder="Descrição" name="descricao"></textarea>
-                <input type="file" class="mb-2" name="imagem">
+                <div>
+                    <input class="w-full p-2 border rounded-md" placeholder="Funcionalidade" name="nome" required>
+                </div>
+                <div>
+                    <input class="w-full p-2 border rounded-md" placeholder="Relator" name="relator" id="relator" required>
+                </div>
+                <div>
+                    <select class="w-full p-2 border rounded-md" name="prioridade" required>
+                        <option value="Alta">Alta</option>
+                        <option value="Média">Média</option>
+                        <option value="Baixa">Baixa</option>
+                    </select>
+                </div>
+                <div>
+                    <textarea class="w-full p-2 border rounded-md" placeholder="Descrição" name="descricao"></textarea>
+                </div>
+                <div>
+                    <label for="imagem" class="block text-gray-700 text-sm font-bold mb-2">Anexo:</label>
+                    <input type="file" class="w-full" name="imagem" id="imagem">
+                </div>
                 <div class="flex justify-end gap-2">
-                    <button type="button" onclick="fecharModalCadastro()" class="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Salvar</button>
+                    <button type="button" onclick="fecharModalCadastro()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md">Salvar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="visualizacao-detalhada" class="hidden">
-        <div id="detalhes-funcionalidade-container">
+    <div id="visualizacao-detalhada" class="hidden flex gap-6 mt-6">
+        <div id="detalhes-funcionalidade-container" class="bg-white p-6 rounded-md shadow-md flex-1">
             <h2 class="text-xl font-semibold mb-4">Detalhes da Funcionalidade</h2>
-            <div id="detalhes-funcionalidade">
-                <p><strong>Nome:</strong> <span id="visualizar-nome"></span></p>
-                <p><strong>Relator:</strong> <span id="visualizar-relator"></span></p>
-                <p><strong>Prioridade:</strong> <span id="visualizar-prioridade"></span></p>
-                <p><strong>Descrição:</strong> <span id="visualizar-descricao"></span></p>
-                <p><strong>Criado em:</strong> <span id="visualizar-criado_em"></span></p>
-                <p><strong>Anexo:</strong> <span id="visualizar-imagem-link"></span></p>
+            <div id="detalhes-funcionalidade" class="space-y-2">
+                <p><strong class="font-semibold">Nome:</strong> <span id="visualizar-nome"></span></p>
+                <p><strong class="font-semibold">Relator:</strong> <span id="visualizar-relator"></span></p>
+                <p><strong class="font-semibold">Prioridade:</strong> <span id="visualizar-prioridade"></span></p>
+                <p><strong class="font-semibold">Descrição:</strong> <span id="visualizar-descricao"></span></p>
+                <p><strong class="font-semibold">Criado em:</strong> <span id="visualizar-criado_em"></span></p>
+                <p><strong class="font-semibold">Anexo:</strong> <span id="visualizar-imagem-link"></span></p>
             </div>
-            <button onclick="fecharVisualizacaoDetalhada()" class="fechar-visualizacao">Fechar Detalhes</button>
+            <button onclick="fecharVisualizacaoDetalhada()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md mt-4 inline-block">Fechar Detalhes</button>
         </div>
-        <div id="chat-gpt-container">
+        <div id="chat-gpt-container" class="bg-white p-6 rounded-md shadow-md flex-1">
             <h2 class="text-xl font-semibold mb-4">Prompt ChatGPT</h2>
-            <textarea id="prompt-visualizacao" placeholder="Digite seu prompt relacionado a esta funcionalidade..." readonly></textarea>
-            <button onclick="enviarPromptVisualizacao()">Gerar Casos de Teste</button>
-            <div id="resposta-visualizacao" class="mt-4 p-3 border rounded bg-gray-100">A resposta aparecerá aqui...</div>
+            <textarea id="prompt-visualizacao" class="w-full p-2 border rounded-md mb-4" placeholder="Digite seu prompt relacionado a esta funcionalidade..." readonly></textarea>
+            <button onclick="enviarPromptVisualizacao()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md">Gerar Casos de Teste</button>
+            <div id="resposta-visualizacao" class="mt-4 p-3 border rounded-md bg-gray-100 whitespace-pre-wrap overflow-y-auto max-h-96">A resposta aparecerá aqui...</div>
         </div>
     </div>
 
@@ -397,7 +116,7 @@
             modalTitle.textContent = 'Nova Funcionalidade';
             salvarButton.textContent = 'Salvar';
             formFuncionalidade.reset();
-            idFuncionalidadeEdicaoInput.value = ''; // Limpa o ID para novo cadastro
+            idFuncionalidadeEdicaoInput.value = '';
             const imagemExistenteInput = formFuncionalidade.querySelector('[name="imagem_existente"]');
             if (imagemExistenteInput) {
                 imagemExistenteInput.remove();
@@ -410,8 +129,6 @@
         }
 
         function abrirVisualizacaoDetalhada(funcionalidade) {
-            console.log("Função abrirVisualizacaoDetalhada chamada:", funcionalidade);
-            console.log("Elemento visualizacaoDetalhada:", visualizacaoDetalhada);
             visualizarNome.textContent = funcionalidade.nome;
             visualizarRelator.textContent = funcionalidade.relator;
             visualizarPrioridade.textContent = funcionalidade.prioridade;
@@ -430,11 +147,13 @@
             }
 
             promptVisualizacaoInput.value = funcionalidade.descricao || '';
-            visualizacaoDetalhada.style.display = 'flex';
+            visualizacaoDetalhada.dataset.currentId = funcionalidade.id; // Armazena o ID
+            visualizacaoDetalhada.classList.remove('hidden');
         }
 
         function fecharVisualizacaoDetalhada() {
-            visualizacaoDetalhada.style.display = 'none';
+            visualizacaoDetalhada.classList.add('hidden');
+            delete visualizacaoDetalhada.dataset.currentId; // Limpa o ID armazenado
         }
 
         function abrirModalEdicao(funcionalidade) {
@@ -448,19 +167,38 @@
             formFuncionalidade.querySelector('[name="descricao"]').value = funcionalidade.descricao || '';
             idFuncionalidadeEdicaoInput.value = funcionalidade.id || '';
 
-            // Verifica se a funcionalidade tem uma imagem e adiciona/atualiza o campo oculto com o nome
+            let imagemInput = formFuncionalidade.querySelector('[name="imagem"]');
             let imagemExistenteInput = formFuncionalidade.querySelector('[name="imagem_existente"]');
+            let imagemPreview = formFuncionalidade.querySelector('.imagem-preview'); // Seletor para a div de preview
+
             if (funcionalidade.imagem) {
+                const nomeArquivo = funcionalidade.imagem.split('/').pop();
                 if (!imagemExistenteInput) {
                     imagemExistenteInput = document.createElement('input');
                     imagemExistenteInput.type = 'hidden';
                     imagemExistenteInput.name = 'imagem_existente';
                     formFuncionalidade.appendChild(imagemExistenteInput);
                 }
-                imagemExistenteInput.value = funcionalidade.imagem.split('/').pop();
+                imagemExistenteInput.value = nomeArquivo;
+
+                // Exibe o nome do arquivo abaixo do input de imagem
+                if (!imagemPreview) {
+                    imagemPreview = document.createElement('div');
+                    imagemPreview.className = 'imagem-preview text-sm text-gray-500 mt-1';
+                    imagemInput.parentNode.insertBefore(imagemPreview, imagemInput.nextSibling);
+                }
+                imagemPreview.textContent = `Arquivo selecionado: ${nomeArquivo}`;
             } else if (imagemExistenteInput) {
-                imagemExistenteInput.remove(); // Remove o campo oculto se não houver imagem
+                imagemExistenteInput.remove();
+                if (imagemPreview) {
+                    imagemPreview.remove(); // Remove o preview se não houver imagem
+                }
+            } else if (imagemPreview){
+                imagemPreview.remove();
             }
+
+            // Limpa o valor do input de arquivo para evitar envios incorretos
+            imagemInput.value = '';
 
             modalCadastro.classList.remove('hidden');
         }
@@ -468,59 +206,109 @@
         async function carregarFuncionalidades() {
             const res = await fetch("http://localhost:8000/funcionalidades");
             const funcionalidades = await res.json();
-            tabela.innerHTML = funcionalidades.map(f => `
-                <tr>
-                    <td class="p-3">${f.nome}</td>
-                    <td class="p-3">${f.prioridade}</td>
-                    <td class="p-3">${f.relator}</td>
-                    <td class="p-3">${new Date(f.criado_em).toLocaleDateString()}</td>
-                    <td class="p-3">
-                        <button onclick='abrirVisualizacaoDetalhada(${JSON.stringify(f)})' class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded mr-2">Visualizar</button>
-                        <button onclick='abrirModalEdicao(${JSON.stringify(f)})' class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-2 rounded">Editar</button>
-                    </td>
-                </tr>
-            `).join('');
+            tabela.innerHTML = funcionalidades.map(f => {
+                // Escapa aspas simples e duplas para o JSON.stringify em atributos HTML
+                const funcionalidadeString = JSON.stringify(f).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                return `
+                    <tr>
+                        <td class="p-3">${f.nome}</td>
+                        <td class="p-3">${f.prioridade}</td>
+                        <td class="p-3">${f.relator}</td>
+                        <td class="p-3">${new Date(f.criado_em).toLocaleDateString()}</td>
+                        <td class="p-3 flex gap-2 justify-center items-center">
+                            <button title="Visualizar" onclick='abrirVisualizacaoDetalhada(${funcionalidadeString})' class="text-blue-600 hover:text-blue-800 p-1 rounded-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </button>
+                            <button title="Editar" onclick='abrirModalEdicao(${funcionalidadeString})' class="text-yellow-600 hover:text-yellow-800 p-1 rounded-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                </svg>
+                            </button>
+                            <button title="Deletar" onclick='deletarFuncionalidade(${f.id})' class="text-red-600 hover:text-red-800 p-1 rounded-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.56 0c1.153 0 2.242.078 3.288.227m8.978 0A48.966 48.966 0 0 1 12 4.5c-2.291 0-4.545.232-6.75.673m13.5 0c-.341.053-.68.107-1.022.165M5.78 5.79L4.247 3.337A1.875 1.875 0 0 1 6.12 2.079h11.76a1.875 1.875 0 0 1 1.874 1.257l-1.532 2.453M12 14.25v-2.625" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function deletarFuncionalidade(id) {
+            if (confirm('Tem certeza que deseja deletar esta funcionalidade? Esta ação não pode ser desfeita.')) {
+                try {
+                    const response = await fetch(`http://localhost:8000/funcionalidades/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        alert('Funcionalidade deletada com sucesso!');
+                        carregarFuncionalidades(); // Recarrega a lista
+                        
+                        // Se a visualização detalhada estiver aberta e for o item deletado, fechar
+                        if (!visualizacaoDetalhada.classList.contains('hidden') && visualizacaoDetalhada.dataset.currentId == String(id)) {
+                            fecharVisualizacaoDetalhada();
+                        }
+                    } else {
+                        const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+                        alert(`Erro ao deletar funcionalidade: ${errorData.detail || response.statusText}`);
+                        console.error('Erro ao deletar:', errorData);
+                    }
+                } catch (error) {
+                    alert('Erro de conexão ao tentar deletar funcionalidade.');
+                    console.error('Erro de conexão:', error);
+                }
+            }
         }
 
         document.getElementById('formFuncionalidade').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = new FormData(e.target);
-            const idEdicao = form.get('id');
-            let url = "http://localhost:8000/funcionalidades";
-            let method = 'POST';
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const idEdicao = form.get('id');
+    let url = "http://localhost:8000/funcionalidades";
+    let method = 'POST';
 
-            if (idEdicao) {
-                url = `http://localhost:8000/funcionalidades/${idEdicao}`;
-                method = 'PUT';
-            }
+    if (idEdicao) {
+        url = `http://localhost:8000/funcionalidades/${idEdicao}`;
+        method = 'PUT';
+    }
 
-            const response = await fetch(url, {
-                method: method,
-                body: form
-            });
+    // Remove o campo 'imagem' se nenhum novo arquivo foi selecionado
+    const imagemInput = document.querySelector('[name="imagem"]');
+    if (imagemInput && imagemInput.files.length === 0) {
+        form.delete('imagem');
+    }
 
-            if (response.ok) {
-                e.target.reset();
-                fecharModalCadastro();
-                carregarFuncionalidades();
-                alert(`Funcionalidade ${idEdicao ? 'atualizada' : 'cadastrada'} com sucesso!`);
-            } else {
-                const errorData = await response.json();
-                alert(`Erro ao ${idEdicao ? 'atualizar' : 'cadastrar'} funcionalidade: ${errorData.detail || response.statusText}`);
-                console.error(errorData);
-            }
-        });
+    const response = await fetch(url, {
+        method: method,
+        body: form
+    });
+
+    if (response.ok) {
+        e.target.reset();
+        fecharModalCadastro();
+        carregarFuncionalidades();
+        alert(`Funcionalidade ${idEdicao ? 'atualizada' : 'cadastrada'} com sucesso!`);
+    } else {
+        const errorData = await response.json();
+        alert(`Erro ao ${idEdicao ? 'atualizar' : 'cadastrar'} funcionalidade: ${errorData.detail || response.statusText}`);
+        console.error(errorData);
+    }
+});
 
         async function enviarPromptVisualizacao() {
             const prompt = promptVisualizacaoInput.value;
             respostaVisualizacaoDiv.textContent = "Pensando...";
 
             try {
-                // Adapte a URL e a estrutura do body conforme a sua API do ChatGPT
                 const response = await fetch("http://localhost:8000/generate_bdd", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ user_story: prompt }) // Ou outra estrutura esperada pela sua API
+                    body: JSON.stringify({ user_story: prompt })
                 });
 
                 const data = await response.json();
