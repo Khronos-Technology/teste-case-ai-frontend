@@ -83,15 +83,6 @@
             text-align: left;
         }
 
-        /* Removido o estilo para label, já que não haverá mais labels explícitos */
-        /* .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-color-primary);
-            font-weight: bold;
-            font-size: 0.9em;
-        } */
-
         .form-group input {
             width: 100%;
             padding: 12px;
@@ -199,14 +190,13 @@
     </div>
 
     <script>
-        // Adicionando um event listener para o evento 'submit' do formulário
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Previne o comportamento padrão de recarregar a página ao enviar o formulário
+            event.preventDefault();
 
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const loginErrorDiv = document.getElementById('loginError'); // Pega o div de erro
-            loginErrorDiv.textContent = ''; // Limpa qualquer mensagem de erro anterior
+            const loginErrorDiv = document.getElementById('loginError');
+            loginErrorDiv.textContent = '';
 
             try {
                 const response = await fetch("http://localhost:8000/login", {
@@ -215,14 +205,14 @@
                     body: JSON.stringify({ username, password })
                 });
 
-                const data = await await response.json(); // Consome a resposta JSON
+                const data = await response.json();
 
                 if (response.ok) {
-                    // Removido o alert para uma experiência de usuário mais fluida
-                    // alert(data.message);
-                    window.location.href = "cadastro_funcionalidade.html"; // Redireciona para a página de funcionalidades
+                    // Armazena o token no localStorage
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('token_type', data.token_type);
+                    window.location.href = "cadastro_funcionalidade.html";
                 } else {
-                    // Exibe a mensagem de erro recebida do backend
                     loginErrorDiv.textContent = data.detail || 'Erro no login. Verifique suas credenciais.';
                 }
             } catch (error) {

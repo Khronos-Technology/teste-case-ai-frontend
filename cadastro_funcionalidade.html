@@ -35,8 +35,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 0 12 21.75c-2.676 0-5.216-.584-7.5-1.632Z" />
             </svg>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.17.992c.07.4-.108.803-.472 1.068L15.7 7.5c-.347.24-.555.626-.54 1.03l.02.246c.01.29.157.564.407.743l1.192.857c.414.295.667.817.625 1.356l-.088 1.302c-.04.53-.466.96-.995 1.077l-.966.233c-.4.096-.75.32-.977.658L12 18.88c-.227.338-.577.562-.977.658l-.966-.233c-.529-.117-.955-.546-.995-1.076l-.088-1.302c-.042-.539.21-1.061.625-1.356l1.192-.857c.25-.179.397-.453.407-.743l.02-.246c.015-.403-.153-.789-.5-1.03l-2.07-1.5c-.364-.265-.542-.668-.472-1.068l.17-.992Zm.974 6.84a2 2 0 1 0 2.21-3.328 2 2 0 0 0-2.21 3.328Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.17.992c.07.4-.108.803-.472 1.068L15.7 7.5c-.347.24-.555.626-.54 1.03l.02.246c.01.29.157.564.407.743l1.192.857c.414.295.667.817.625 1.356l-.088 1.302c-.04.53-.466.96-.995 1.077l-.966.233c-.4.096-.75.32-.977.658L12 18.88c-.227.338-.577.562-.977.658l-.966-.233c-.529-.117-.955-.546-.995-1.076l-.088-1.302c-.042-.539.21-1.061.625-1.356l1.192-.857c.25-.179.397-.453.407-.743l.02-.246c.015-.403-.153-.789-.5-1.03l-2.07-1.5c-.364-.265-.542-.668-.472-1.068l.17-.992Zm.974 6.84a2 2 0 1 0 2.21-3.328 2 0 0 0-2.21 3.328Z" />
             </svg>
+            <button id="logoutButton" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md text-sm ml-4">Sair</button>
         </div>
     </nav>
 
@@ -135,6 +136,24 @@
     </div>
 
     <script>
+        // Função para verificar a autenticação ao carregar a página
+        function checkAuthentication() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                // Redireciona para a página de login se não houver token
+                window.location.href = 'index.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Adiciona um listener para o botão de sair
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('token_type');
+            window.location.href = 'index.html';
+        });
+
         // Objeto para gerenciar elementos da UI
         const UI = {
             modalCadastro: document.getElementById('modal-cadastro'),
@@ -155,7 +174,6 @@
             idFuncionalidadeEdicaoInput: document.getElementById('formFuncionalidade').querySelector('[name="id"]'),
             actionsDropdown: document.getElementById('actionsDropdown'),
             currentActionButton: null,
-            // Adicionado referência ao checkbox superior
             selectAllCheckbox: document.getElementById('selectAllCheckbox'),
 
             // Métodos para controle de modais e dropdowns
@@ -166,7 +184,7 @@
                 this.idFuncionalidadeEdicaoInput.value = '';
                 const imagemExistenteInput = this.formFuncionalidade.querySelector('[name="imagem_existente"]');
                 if (imagemExistenteInput) {
-                    imagemExistenteInput.remove();
+                    imagemExistenteInput.value = ''; // Limpa o valor para nova funcionalidade
                 }
                 const imagemPreview = this.formFuncionalidade.querySelector('.imagem-preview');
                 if (imagemPreview) {
@@ -188,8 +206,11 @@
 
                 if (funcionalidade.imagem) {
                     const link = document.createElement('a');
-                    link.href = `http://localhost:8000/uploads/${funcionalidade.imagem.split('/').pop()}`;
-                    link.textContent = funcionalidade.imagem.split('/').pop();
+                    // Certifique-se que o caminho da imagem está correto.
+                    // Se o backend retorna apenas o nome do arquivo, você precisa concatenar com a URL base de uploads.
+                    const nomeArquivo = funcionalidade.imagem.split('/').pop();
+                    link.href = `${APIs.API_BASE_URL}/uploads/${nomeArquivo}`;
+                    link.textContent = nomeArquivo;
                     link.target = '_blank';
                     this.visualizarImagemLink.innerHTML = '';
                     this.visualizarImagemLink.appendChild(link);
@@ -223,268 +244,383 @@
                 let imagemExistenteInput = this.formFuncionalidade.querySelector('[name="imagem_existente"]');
                 let imagemPreview = this.formFuncionalidade.querySelector('.imagem-preview');
 
+                // Lida com a imagem existente ao abrir o modal de edição
                 if (funcionalidade.imagem) {
                     const nomeArquivo = funcionalidade.imagem.split('/').pop();
                     if (!imagemExistenteInput) {
                         imagemExistenteInput = document.createElement('input');
                         imagemExistenteInput.type = 'hidden';
-                        imagemExistenteInput.name = 'imagem_existente';
+                        imagemExistenteInput.name = 'imagem_existente'; // Use o nome do input oculto
                         this.formFuncionalidade.appendChild(imagemExistenteInput);
                     }
-                    imagemExistenteInput.value = nomeArquivo;
+                    imagemExistenteInput.value = nomeArquivo; // Armazena o nome do arquivo existente
 
                     if (!imagemPreview) {
                         imagemPreview = document.createElement('div');
                         imagemPreview.className = 'imagem-preview text-sm text-gray-500 mt-1';
+                        // Insere o preview abaixo do input de arquivo
                         imagemInput.parentNode.insertBefore(imagemPreview, imagemInput.nextSibling);
                     }
-                    imagemPreview.textContent = `Arquivo selecionado: ${nomeArquivo}`;
-                } else if (imagemExistenteInput) {
-                    imagemExistenteInput.remove();
+                    imagemPreview.innerHTML = `Arquivo atual: <strong>${nomeArquivo}</strong> <button type="button" class="text-red-500 hover:text-red-700 ml-2" onclick="UI.removerImagemExistente()">Remover</button>`;
+                } else {
+                    // Limpa qualquer informação de imagem existente se não houver uma
+                    if (imagemExistenteInput) {
+                        imagemExistenteInput.value = '';
+                    }
                     if (imagemPreview) {
                         imagemPreview.remove();
                     }
-                } else if (imagemPreview) {
-                    imagemPreview.remove();
                 }
-
+                // Limpa o input de arquivo para que o usuário precise explicitamente selecionar um novo
                 imagemInput.value = '';
+
                 this.modalCadastro.classList.remove('hidden');
             },
 
-            toggleActionsMenu: function(event, funcionalidade, clickedButton) {
-                event.stopPropagation();
+            removerImagemExistente: function() {
+                const imagemExistenteInput = this.formFuncionalidade.querySelector('[name="imagem_existente"]');
+                if (imagemExistenteInput) {
+                    imagemExistenteInput.value = ''; // Define o valor como vazio para indicar remoção
+                }
+                const imagemPreview = this.formFuncionalidade.querySelector('.imagem-preview');
+                if (imagemPreview) {
+                    imagemPreview.remove(); // Remove o texto de preview
+                }
+                alert('A imagem será removida ao salvar esta funcionalidade, a menos que você selecione uma nova imagem.');
+            },
 
-                if (!this.actionsDropdown.classList.contains('hidden') && this.currentActionButton === clickedButton) {
-                    this.hideActionsDropdown();
+            // Função para alternar o dropdown de ações
+            toggleActionsDropdown: function(event, funcionalidadeId, nomeFuncionalidade) {
+                const button = event.currentTarget;
+                if (this.currentActionButton === button && !this.actionsDropdown.classList.contains('hidden')) {
+                    this.actionsDropdown.classList.add('hidden');
                     this.currentActionButton = null;
                     return;
                 }
 
-                this.hideActionsDropdown();
+                this.currentActionButton = button;
+                this.actionsDropdown.innerHTML = ''; // Limpa o conteúdo anterior
 
-                const funcionalidadeString = JSON.stringify(funcionalidade).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                const dropdownItems = [
+                    { text: 'Visualizar', action: `APIs.carregarDetalhesFuncionalidade(${funcionalidadeId})` },
+                    { text: 'Editar', action: `APIs.carregarParaEdicao(${funcionalidadeId})` },
+                    { text: 'Excluir', action: `APIs.deletarFuncionalidade(${funcionalidadeId}, '${nomeFuncionalidade}')` }
+                ];
 
-                this.actionsDropdown.innerHTML = `
-                    <div class="py-1">
-                        <button onclick='UI.abrirVisualizacaoDetalhada(${funcionalidadeString}); UI.hideActionsDropdown()' class="block w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            </svg>
-                            Visualizar
-                        </button>
-                        <button onclick='UI.abrirModalEdicao(${funcionalidadeString}); UI.hideActionsDropdown()' class="block w-full text-left px-4 py-2 text-sm text-yellow-600 hover:bg-gray-100 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                            </svg>
-                            Editar
-                        </button>
-                        <button onclick='APIs.deletarFuncionalidade(${funcionalidade.id}); UI.hideActionsDropdown()' class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.56 0c1.153 0 2.242.078 3.288.227m8.978 0A48.966 48.966 0 0 1 12 4.5c-2.291 0-4.545.232-6.75.673m13.5 0c-.341.053-.68.107-1.022.165M5.78 5.79L4.247 3.337A1.875 1.875 0 0 1 6.12 2.079h11.76a1.875 1.875 0 0 1 1.874 1.257l-1.532 2.453M12 14.25v-2.625" />
-                            </svg>
-                            Deletar
-                        </button>
-                    </div>
-                `;
-
-                const buttonRect = clickedButton.getBoundingClientRect();
-                this.actionsDropdown.style.top = `${buttonRect.bottom + window.scrollY + 5}px`;
-
-                const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
-                const dropdownWidth = this.actionsDropdown.offsetWidth;
-                const padding = 10;
-
-                let finalLeftPosition;
-
-                const desiredLeftIfOpensRight = buttonRect.left + window.scrollX;
-                const rightEdgeIfOpensRight = desiredLeftIfOpensRight + dropdownWidth;
-
-                if (rightEdgeIfOpensRight + padding > viewportWidth) {
-                    const desiredLeftIfOpensLeft = buttonRect.right + window.scrollX - dropdownWidth;
-                    if (desiredLeftIfOpensLeft < padding) {
-                        finalLeftPosition = padding;
-                    } else {
-                        finalLeftPosition = desiredLeftIfOpensLeft;
-                    }
-                } else {
-                    finalLeftPosition = desiredLeftIfOpensRight;
-                }
-
-                this.actionsDropdown.style.left = `${finalLeftPosition}px`;
-                this.actionsDropdown.classList.remove('hidden');
-                this.currentActionButton = clickedButton;
-            },
-
-            hideActionsDropdown: function() {
-                this.actionsDropdown.classList.add('hidden');
-                this.currentActionButton = null;
-            },
-
-            renderizarTabela: function(funcionalidades) {
-                this.tabela.innerHTML = funcionalidades.map(f => {
-                    const funcionalidadeString = JSON.stringify(f).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-                    return `
-                        <tr>
-                            <td class="p-3 text-center"><input type="checkbox" class="row-checkbox form-checkbox h-4 w-4 text-blue-600"></td>
-                            <td class="p-3">Sistema projeto</td>
-                            <td class="p-3">${f.nome}</td>
-                            <td class="p-3">${f.prioridade}</td>
-                            <td class="p-3">${f.relator}</td>
-                            <td class="p-3 text-center relative">
-                                <button title="Ações" data-funcionalidade='${funcionalidadeString}' class="action-button text-gray-600 hover:text-gray-800 p-1 rounded-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-
-                document.querySelectorAll('.action-button').forEach(button => {
-                    button.addEventListener('click', function(event) {
-                        const funcionalidade = JSON.parse(this.dataset.funcionalidade.replace(/&quot;/g, '"').replace(/&apos;/g, "'"));
-                        UI.toggleActionsMenu(event, funcionalidade, this);
-                    });
+                dropdownItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm';
+                    div.textContent = item.text;
+                    div.onclick = () => {
+                        eval(item.action); // Executa a ação
+                        this.actionsDropdown.classList.add('hidden'); // Fecha o dropdown
+                    };
+                    this.actionsDropdown.appendChild(div);
                 });
 
-                // Reinicia o estado do checkbox superior ao renderizar a tabela
-                this.selectAllCheckbox.checked = false;
+                // Posiciona o dropdown
+                const rect = button.getBoundingClientRect();
+                this.actionsDropdown.style.top = `${rect.bottom + window.scrollY + 5}px`;
+                this.actionsDropdown.style.left = `${rect.left + window.scrollX}px`;
+                this.actionsDropdown.classList.remove('hidden');
+            },
+
+            fecharActionsDropdown: function() {
+                this.actionsDropdown.classList.add('hidden');
+                this.currentActionButton = null;
             }
         };
 
         // Objeto para gerenciar as chamadas de API
         const APIs = {
-            BASE_URL: "http://localhost:8000",
+            API_BASE_URL: "http://localhost:8000", // Certifique-se de que esta URL está correta
 
-            carregarFuncionalidades: async function() {
+            // Função para obter os headers de autenticação
+            getAuthHeaders: function() {
+                const token = localStorage.getItem('access_token');
+                const tokenType = localStorage.getItem('token_type');
+                if (token && tokenType) {
+                    return {
+                        'Authorization': `${tokenType} ${token}`,
+                        'Content-Type': 'application/json' // Default para JSON, pode ser sobrescrito
+                    };
+                }
+                // Redireciona para o login se não houver token, o que já é feito em checkAuthentication()
+                window.location.href = 'index.html';
+                throw new Error("Token de autenticação não encontrado. Redirecionando para o login.");
+            },
+
+            listarFuncionalidades: async function() {
                 try {
-                    const res = await fetch(`${this.BASE_URL}/funcionalidades`);
-                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                    const funcionalidades = await res.json();
-                    UI.renderizarTabela(funcionalidades);
+                    const headers = this.getAuthHeaders();
+                    delete headers['Content-Type']; // GET request, não precisa de Content-Type
+
+                    const response = await fetch(`${this.API_BASE_URL}/funcionalidades`, {
+                        method: 'GET',
+                        headers: headers
+                    });
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return [];
+                        }
+                        throw new Error(`Erro ao listar funcionalidades: ${response.statusText}`);
+                    }
+                    const funcionalidades = await response.json();
+                    UI.tabela.innerHTML = ''; // Limpa a tabela antes de popular
+                    funcionalidades.forEach(funcionalidade => {
+                        const row = UI.tabela.insertRow();
+                        row.innerHTML = `
+                            <td class="p-3 text-center">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 item-checkbox">
+                            </td>
+                            <td class="p-3">Projeto X</td>
+                            <td class="p-3">${funcionalidade.nome}</td>
+                            <td class="p-3">${funcionalidade.prioridade}</td>
+                            <td class="p-3">${funcionalidade.relator}</td>
+                            <td class="p-3 text-center relative">
+                                <button onclick="UI.toggleActionsDropdown(event, ${funcionalidade.id}, '${funcionalidade.nome}')" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                    </svg>
+                                </button>
+                            </td>
+                        `;
+                    });
+                    return funcionalidades;
                 } catch (error) {
-                    console.error('Erro ao carregar funcionalidades:', error);
-                    alert('Não foi possível carregar as funcionalidades. Verifique a conexão com o servidor.');
+                    console.error("Erro ao listar funcionalidades:", error);
+                    return [];
                 }
             },
 
-            salvarFuncionalidade: async function(formData) {
-                const idEdicao = formData.get('id');
-                let url = `${this.BASE_URL}/funcionalidades`;
-                let method = 'POST';
+            salvarFuncionalidade: async function(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+                const funcionalidadeId = form.querySelector('[name="id"]').value;
 
-                if (idEdicao) {
-                    url = `${this.BASE_URL}/funcionalidades/${idEdicao}`;
-                    method = 'PUT';
-                }
+                // --- Correção Principal AQUI ---
+                const imagemInput = form.querySelector('[name="imagem"]');
+                const imagemExistenteInput = form.querySelector('[name="imagem_existente"]');
 
-                const imagemInput = document.querySelector('[name="imagem"]');
-                if (imagemInput && imagemInput.files.length === 0) {
+                // Se o usuário NÃO selecionou uma nova imagem (input de arquivo está vazio)
+                // E existe um valor no campo hidden 'imagem_existente' (ou seja, havia uma imagem antes)
+                if (imagemInput.files.length === 0 && imagemExistenteInput && imagemExistenteInput.value) {
+                    // Adiciona o nome da imagem existente ao formData
+                    // O backend precisará de um campo para saber que a imagem existente deve ser mantida.
+                    formData.append('imagem_mantida', imagemExistenteInput.value);
+                    // Remove o campo 'imagem' do FormData para não enviar um campo de arquivo vazio
                     formData.delete('imagem');
+                } else if (imagemInput.files.length > 0) {
+                    // Se uma nova imagem foi selecionada, o FormData já a incluirá.
+                    // Garante que o campo 'imagem_mantida' não seja enviado se uma nova imagem for enviada.
+                    formData.delete('imagem_mantida');
+                } else {
+                    // Se não há nova imagem e o campo 'imagem_existente' está vazio (o usuário removeu ou nunca teve)
+                    // Isso indica ao backend para remover a imagem.
+                    formData.append('remover_imagem', 'true');
+                    formData.delete('imagem'); // Garante que nenhum campo vazio seja enviado
+                    formData.delete('imagem_mantida');
                 }
+                // --- Fim da correção ---
+
+                let method = 'POST';
+                let url = `${this.API_BASE_URL}/funcionalidades`;
+                if (funcionalidadeId) {
+                    method = 'PUT';
+                    url = `${this.API_BASE_URL}/funcionalidades/${funcionalidadeId}`;
+                }
+
+                const headers = {
+                    'Authorization': `${localStorage.getItem('token_type')} ${localStorage.getItem('access_token')}`
+                };
+
+                // REMOVE o 'Content-Type' para requisições com FormData
+                // O navegador define automaticamente o 'multipart/form-data'
+                delete headers['Content-Type'];
 
                 try {
                     const response = await fetch(url, {
                         method: method,
+                        headers: headers,
                         body: formData
                     });
 
-                    if (response.ok) {
-                        UI.formFuncionalidade.reset();
-                        UI.fecharModalCadastro();
-                        this.carregarFuncionalidades();
-                        alert(`Funcionalidade ${idEdicao ? 'atualizada' : 'cadastrada'} com sucesso!`);
-                    } else {
-                        const errorData = await response.json().catch(() => ({ detail: response.statusText }));
-                        alert(`Erro ao ${idEdicao ? 'atualizar' : 'cadastrar'} funcionalidade: ${errorData.detail || response.statusText}`);
-                        console.error('Erro na requisição:', errorData);
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return;
+                        }
+                        const errorData = await response.json();
+                        throw new Error(`Erro ao salvar funcionalidade: ${errorData.detail || response.statusText}`);
                     }
+                    UI.fecharModalCadastro();
+                    await this.listarFuncionalidades(); // Recarrega a lista
+                    alert(`Funcionalidade ${funcionalidadeId ? 'atualizada' : 'cadastrada'} com sucesso!`); // Feedback ao usuário
                 } catch (error) {
-                    alert('Erro de conexão ao tentar salvar funcionalidade.');
-                    console.error('Erro de conexão:', error);
+                    console.error("Erro ao salvar funcionalidade:", error);
+                    alert("Erro ao salvar funcionalidade: " + error.message);
                 }
             },
 
-            deletarFuncionalidade: async function(id) {
-                if (confirm('Tem certeza que deseja deletar esta funcionalidade? Esta ação não pode ser desfeita.')) {
-                    try {
-                        const response = await fetch(`${this.BASE_URL}/funcionalidades/${id}`, {
-                            method: 'DELETE'
-                        });
-
-                        if (response.ok) {
-                            alert('Funcionalidade deletada com sucesso!');
-                            this.carregarFuncionalidades();
-                            if (!UI.visualizacaoDetalhada.classList.contains('hidden') && UI.visualizacaoDetalhada.dataset.currentId == String(id)) {
-                                UI.fecharVisualizacaoDetalhada();
-                            }
-                        } else {
-                            const errorData = await response.json().catch(() => ({ detail: response.statusText }));
-                            alert(`Erro ao deletar funcionalidade: ${errorData.detail || response.statusText}`);
-                            console.error('Erro ao deletar:', errorData);
+            carregarDetalhesFuncionalidade: async function(id) {
+                try {
+                    const headers = this.getAuthHeaders();
+                    delete headers['Content-Type']; // GET request, não precisa de Content-Type
+                    const response = await fetch(`${this.API_BASE_URL}/funcionalidades/${id}`, { // Alterado para buscar por ID
+                        method: 'GET',
+                        headers: headers
+                    });
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return;
                         }
-                    } catch (error) {
-                        alert('Erro de conexão ao tentar deletar funcionalidade.');
-                        console.error('Erro de conexão:', error);
+                        throw new Error(`Erro ao carregar detalhes: ${response.statusText}`);
                     }
+                    const funcionalidade = await response.json(); // Espera um único objeto, não uma lista
+                    if (funcionalidade) {
+                        UI.abrirVisualizacaoDetalhada(funcionalidade);
+                    } else {
+                        alert("Funcionalidade não encontrada para visualização.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar detalhes da funcionalidade:", error);
+                    alert("Erro ao carregar detalhes: " + error.message);
+                }
+            },
+
+            carregarParaEdicao: async function(id) {
+                try {
+                    const headers = this.getAuthHeaders();
+                    delete headers['Content-Type']; // GET request, não precisa de Content-Type
+                    const response = await fetch(`${this.API_BASE_URL}/funcionalidades/${id}`, { // Alterado para buscar por ID
+                        method: 'GET',
+                        headers: headers
+                    });
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return;
+                        }
+                        throw new Error(`Erro ao carregar funcionalidade para edição: ${response.statusText}`);
+                    }
+                    const funcionalidade = await response.json(); // Espera um único objeto, não uma lista
+                    if (funcionalidade) {
+                        UI.abrirModalEdicao(funcionalidade);
+                    } else {
+                        alert("Funcionalidade não encontrada para edição.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar funcionalidade para edição:", error);
+                    alert("Erro ao carregar funcionalidade: " + error.message);
+                }
+            },
+
+            deletarFuncionalidade: async function(id, nomeFuncionalidade) {
+                if (!confirm(`Tem certeza que deseja deletar a funcionalidade "${nomeFuncionalidade}"?`)) {
+                    return;
+                }
+                try {
+                    const headers = this.getAuthHeaders();
+                    const response = await fetch(`${this.API_BASE_URL}/funcionalidades/${id}`, {
+                        method: 'DELETE',
+                        headers: headers
+                    });
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return;
+                        }
+                        const errorData = await response.json();
+                        throw new Error(`Erro ao deletar funcionalidade: ${errorData.detail || response.statusText}`);
+                    }
+                    alert(`Funcionalidade "${nomeFuncionalidade}" deletada com sucesso!`);
+                    await this.listarFuncionalidades(); // Recarrega a lista
+                } catch (error) {
+                    console.error("Erro ao deletar funcionalidade:", error);
+                    alert("Erro ao deletar funcionalidade: " + error.message);
                 }
             },
 
             enviarPromptVisualizacao: async function() {
-                const prompt = UI.promptVisualizacaoInput.value;
-                UI.respostaVisualizacaoDiv.textContent = "Pensando...";
+                const userStory = UI.promptVisualizacaoInput.value;
+                if (!userStory) {
+                    alert("Por favor, digite uma história de usuário para gerar cenários BDD.");
+                    return;
+                }
+
+                UI.respostaVisualizacaoDiv.textContent = "Gerando cenários BDD...";
+                UI.respostaVisualizacaoDiv.style.color = '#4a5568'; // Cor de texto padrão
 
                 try {
-                    const response = await fetch(`${this.BASE_URL}/generate_bdd`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ user_story: prompt })
+                    const response = await fetch(`${this.API_BASE_URL}/generate_bdd`, {
+                        method: 'POST',
+                        headers: this.getAuthHeaders(), // Isso já retorna Content-Type: application/json
+                        body: JSON.stringify({ user_story: userStory, temperature: 0.7 })
                     });
 
-                    const data = await response.json();
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return;
+                        }
+                        const errorData = await response.json();
+                        throw new Error(`Erro ao gerar BDD: ${errorData.detail || response.statusText}`);
+                    }
 
-                    if (response.ok) {
-                        UI.respostaVisualizacaoDiv.textContent = data.bdd_scenarios || "Resposta gerada.";
+                    const data = await response.json();
+                    if (data.error) {
+                        UI.respostaVisualizacaoDiv.textContent = `Erro do Gemini: ${data.error}`;
+                        UI.respostaVisualizacaoDiv.style.color = '#ef5350'; // Vermelho para erro
                     } else {
-                        UI.respostaVisualizacaoDiv.textContent = `Erro na requisição: ${data.detail || response.statusText}`;
-                        console.error('Erro ao gerar BDD:', data);
+                        UI.respostaVisualizacaoDiv.textContent = data.bdd_scenarios;
+                        UI.respostaVisualizacaoDiv.style.color = '#2d3748'; // Cor de texto escuro para o resultado
                     }
                 } catch (error) {
-                    UI.respostaVisualizacaoDiv.textContent = "Erro ao comunicar com o servidor.";
-                    console.error('Erro de conexão com a API BDD:', error);
+                    console.error("Erro ao chamar a API Gemini:", error);
+                    UI.respostaVisualizacaoDiv.textContent = "Erro ao gerar cenários BDD. " + error.message;
+                    UI.respostaVisualizacaoDiv.style.color = '#ef5350'; // Vermelho
                 }
             }
         };
 
-        // Event Listeners
+        // Adiciona o event listener para o formulário no carregamento do DOM.
+        // Usamos .bind(APIs) para garantir que 'this' dentro de salvarFuncionalidade
+        // sempre se refira ao objeto APIs, onde API_BASE_URL está definida.
         document.addEventListener('DOMContentLoaded', () => {
-            APIs.carregarFuncionalidades();
+            if (checkAuthentication()) {
+                UI.formFuncionalidade.addEventListener('submit', APIs.salvarFuncionalidade.bind(APIs));
+                APIs.listarFuncionalidades();
+            }
 
-            // Adiciona o event listener para o checkbox superior
-            UI.selectAllCheckbox.addEventListener('change', function() {
-                const isChecked = this.checked;
-                document.querySelectorAll('.row-checkbox').forEach(checkbox => {
-                    checkbox.checked = isChecked;
-                });
+            // Fechar dropdown de ações ao clicar fora
+            document.addEventListener('click', function(event) {
+                if (UI.currentActionButton && !UI.actionsDropdown.contains(event.target) && !UI.currentActionButton.contains(event.target)) {
+                    UI.fecharActionsDropdown();
+                }
             });
         });
 
-        UI.formFuncionalidade.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = new FormData(e.target);
-            await APIs.salvarFuncionalidade(form);
-        });
-
-        document.addEventListener('click', (event) => {
-            // Esconde o dropdown de ações se o clique for fora dele ou do botão que o acionou
-            if (!UI.actionsDropdown.classList.contains('hidden') && !UI.actionsDropdown.contains(event.target) && !event.target.closest('.action-button')) {
-                UI.hideActionsDropdown();
-            }
-        });
     </script>
-
 </body>
 </html>
