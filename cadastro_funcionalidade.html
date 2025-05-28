@@ -5,39 +5,77 @@
     <title>Funcionalidades</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Seção de Estilos Customizados */
         .imagem-preview {
             font-size: 0.875rem; /* Equivalente a text-sm no Tailwind */
             color: #6b7280; /* Equivalente a text-gray-500 no Tailwind */
             margin-top: 0.25rem; /* Equivalente a mt-1 no Tailwind */
         }
+
+        /* Estilo para o dropdown de ações */
+        #actionsDropdown {
+            position: absolute;
+            z-index: 1000; /* Garante que o dropdown fique acima de outros elementos */
+            min-width: 150px; /* Adicione uma largura mínima para evitar que ele seja muito estreito */
+            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura */
+        }
     </style>
 </head>
+<body class="bg-gray-100 text-gray-800">
 
-<body class="bg-gray-100 text-gray-800 p-6">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold">Funcionalidades</h2>
-        <button title="Nova Funcionalidade" onclick="abrirModalCadastro()" class="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-md">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    <nav class="bg-blue-900 text-white p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-green-400 mr-2">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
             </svg>
-        </button>
+            <span class="text-xl font-bold">testcaseAI</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 0 12 21.75c-2.676 0-5.216-.584-7.5-1.632Z" />
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.17.992c.07.4-.108.803-.472 1.068L15.7 7.5c-.347.24-.555.626-.54 1.03l.02.246c.01.29.157.564.407.743l1.192.857c.414.295.667.817.625 1.356l-.088 1.302c-.04.53-.466.96-.995 1.077l-.966.233c-.4.096-.75.32-.977.658L12 18.88c-.227.338-.577.562-.977.658l-.966-.233c-.529-.117-.955-.546-.995-1.076l-.088-1.302c-.042-.539.21-1.061.625-1.356l1.192-.857c.25-.179.397-.453.407-.743l.02-.246c.015-.403-.153-.789-.5-1.03l-2.07-1.5c-.364-.265-.542-.668-.472-1.068l.17-.992Zm.974 6.84a2 2 0 1 0 2.21-3.328 2 2 0 0 0-2.21 3.328Z" />
+            </svg>
+        </div>
+    </nav>
+
+    <div class="bg-blue-900 text-white p-2 flex justify-start items-center space-x-4 px-4">
+        <button class="bg-blue-700 px-4 py-2 rounded-md font-semibold">Casos de teste</button>
+        <button class="bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Área de trabalho</button>
+        <button class="bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Testes em execução</button>
     </div>
 
-    <h3 class="text-lg font-semibold mb-2">Lista de Casos de teste</h3>
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">Funcionalidades</h2>
+            <button title="Nova Funcionalidade" onclick="UI.abrirModalCadastro()" class="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </button>
+        </div>
 
-    <table class="w-full bg-white shadow-md rounded-md overflow-hidden">
-        <thead class="bg-blue-500 text-white">
-            <tr>
-                <th class="p-3 text-left">Funcionalidade</th>
-                <th class="p-3 text-left">Prioridade</th>
-                <th class="p-3 text-left">Relator</th>
-                <th class="p-3 text-left">Criado em</th>
-                <th class="p-3 text-center">Ações</th>
-            </tr>
-        </thead>
-        <tbody id="tabela-funcionalidades" class="divide-y divide-gray-200">
-        </tbody>
-    </table>
+        <h3 class="text-lg font-semibold mb-2">Lista de Casos de teste</h3>
+
+        <table class="w-full bg-white shadow-md rounded-md overflow-hidden">
+            <thead class="bg-blue-500 text-white">
+                <tr>
+                    <th class="p-3 text-center w-8"><input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"></th>
+                    <th class="p-3 text-left">Projeto</th>
+                    <th class="p-3 text-left">Funcionalidade</th>
+                    <th class="p-3 text-left">Prioridade</th>
+                    <th class="p-3 text-left">Relator</th>
+                    <th class="p-3 text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-funcionalidades" class="divide-y divide-gray-200">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="actionsDropdown" class="bg-white border border-gray-200 rounded-md shadow-lg hidden">
+        </div>
 
     <div id="modal-cadastro" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center">
         <div class="bg-white p-6 rounded-md shadow-lg w-full max-w-lg">
@@ -66,14 +104,14 @@
                     <input type="file" class="w-full" name="imagem" id="imagem">
                 </div>
                 <div class="flex justify-end gap-2">
-                    <button type="button" onclick="fecharModalCadastro()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
+                    <button type="button" onclick="UI.fecharModalCadastro()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md">Salvar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="visualizacao-detalhada" class="hidden flex gap-6 mt-6">
+    <div id="visualizacao-detalhada" class="hidden flex gap-6 mt-6 p-6">
         <div id="detalhes-funcionalidade-container" class="bg-white p-6 rounded-md shadow-md flex-1">
             <h2 class="text-xl font-semibold mb-4">Detalhes da Funcionalidade</h2>
             <div id="detalhes-funcionalidade" class="space-y-2">
@@ -84,247 +122,353 @@
                 <p><strong class="font-semibold">Criado em:</strong> <span id="visualizar-criado_em"></span></p>
                 <p><strong class="font-semibold">Anexo:</strong> <span id="visualizar-imagem-link"></span></p>
             </div>
-            <button onclick="fecharVisualizacaoDetalhada()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md mt-4 inline-block">Fechar Detalhes</button>
+            <button onclick="UI.fecharVisualizacaoDetalhada()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md mt-4 inline-block">Fechar Detalhes</button>
         </div>
         <div id="chat-gpt-container" class="bg-white p-6 rounded-md shadow-md flex-1">
             <h2 class="text-xl font-semibold mb-4">Prompt ChatGPT</h2>
             <textarea id="prompt-visualizacao" class="w-full p-2 border rounded-md mb-4" placeholder="Digite seu prompt relacionado a esta funcionalidade..." readonly></textarea>
-            <button onclick="enviarPromptVisualizacao()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md">Gerar Casos de Teste</button>
+            <button onclick="APIs.enviarPromptVisualizacao()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md">Gerar Casos de Teste</button>
             <div id="resposta-visualizacao" class="mt-4 p-3 border rounded-md bg-gray-100 whitespace-pre-wrap overflow-y-auto max-h-96">A resposta aparecerá aqui...</div>
         </div>
     </div>
 
     <script>
-        const modalCadastro = document.getElementById('modal-cadastro');
-        const visualizacaoDetalhada = document.getElementById('visualizacao-detalhada');
-        const detalhesFuncionalidadeContainer = document.getElementById('detalhes-funcionalidade');
-        const tabela = document.getElementById('tabela-funcionalidades');
-        const visualizarNome = document.getElementById('visualizar-nome');
-        const visualizarRelator = document.getElementById('visualizar-relator');
-        const visualizarPrioridade = document.getElementById('visualizar-prioridade');
-        const visualizarDescricao = document.getElementById('visualizar-descricao');
-        const visualizarCriadoEm = document.getElementById('visualizar-criado_em');
-        const visualizarImagemLink = document.getElementById('visualizar-imagem-link');
-        const promptVisualizacaoInput = document.getElementById('prompt-visualizacao');
-        const respostaVisualizacaoDiv = document.getElementById('resposta-visualizacao');
-        const formFuncionalidade = document.getElementById('formFuncionalidade');
-        const modalTitle = document.querySelector('#modal-cadastro h2');
-        const salvarButton = document.querySelector('#formFuncionalidade button[type="submit"]');
-        const idFuncionalidadeEdicaoInput = formFuncionalidade.querySelector('[name="id"]');
+        // Objeto para gerenciar elementos da UI
+        const UI = {
+            modalCadastro: document.getElementById('modal-cadastro'),
+            visualizacaoDetalhada: document.getElementById('visualizacao-detalhada'),
+            detalhesFuncionalidadeContainer: document.getElementById('detalhes-funcionalidade'),
+            tabela: document.getElementById('tabela-funcionalidades'),
+            visualizarNome: document.getElementById('visualizar-nome'),
+            visualizarRelator: document.getElementById('visualizar-relator'),
+            visualizarPrioridade: document.getElementById('visualizar-prioridade'),
+            visualizarDescricao: document.getElementById('visualizar-descricao'),
+            visualizarCriadoEm: document.getElementById('visualizar-criado_em'),
+            visualizarImagemLink: document.getElementById('visualizar-imagem-link'),
+            promptVisualizacaoInput: document.getElementById('prompt-visualizacao'),
+            respostaVisualizacaoDiv: document.getElementById('resposta-visualizacao'),
+            formFuncionalidade: document.getElementById('formFuncionalidade'),
+            modalTitle: document.querySelector('#modal-cadastro h2'),
+            salvarButton: document.querySelector('#formFuncionalidade button[type="submit"]'),
+            idFuncionalidadeEdicaoInput: document.getElementById('formFuncionalidade').querySelector('[name="id"]'),
+            actionsDropdown: document.getElementById('actionsDropdown'),
+            currentActionButton: null,
 
-        function abrirModalCadastro() {
-            modalTitle.textContent = 'Nova Funcionalidade';
-            salvarButton.textContent = 'Salvar';
-            formFuncionalidade.reset();
-            idFuncionalidadeEdicaoInput.value = '';
-            const imagemExistenteInput = formFuncionalidade.querySelector('[name="imagem_existente"]');
-            if (imagemExistenteInput) {
-                imagemExistenteInput.remove();
-            }
-            modalCadastro.classList.remove('hidden');
-        }
-
-        function fecharModalCadastro() {
-            modalCadastro.classList.add('hidden');
-        }
-
-        function abrirVisualizacaoDetalhada(funcionalidade) {
-            visualizarNome.textContent = funcionalidade.nome;
-            visualizarRelator.textContent = funcionalidade.relator;
-            visualizarPrioridade.textContent = funcionalidade.prioridade;
-            visualizarDescricao.textContent = funcionalidade.descricao || 'Nenhuma descrição';
-            visualizarCriadoEm.textContent = new Date(funcionalidade.criado_em).toLocaleDateString();
-
-            if (funcionalidade.imagem) {
-                const link = document.createElement('a');
-                link.href = `http://localhost:8000/uploads/${funcionalidade.imagem.split('/').pop()}`;
-                link.textContent = funcionalidade.imagem.split('/').pop();
-                link.target = '_blank';
-                visualizarImagemLink.innerHTML = '';
-                visualizarImagemLink.appendChild(link);
-            } else {
-                visualizarImagemLink.textContent = 'Nenhum anexo';
-            }
-
-            promptVisualizacaoInput.value = funcionalidade.descricao || '';
-            visualizacaoDetalhada.dataset.currentId = funcionalidade.id; // Armazena o ID
-            visualizacaoDetalhada.classList.remove('hidden');
-        }
-
-        function fecharVisualizacaoDetalhada() {
-            visualizacaoDetalhada.classList.add('hidden');
-            delete visualizacaoDetalhada.dataset.currentId; // Limpa o ID armazenado
-        }
-
-        function abrirModalEdicao(funcionalidade) {
-            modalTitle.textContent = 'Editar Funcionalidade';
-            salvarButton.textContent = 'Atualizar';
-            formFuncionalidade.reset();
-
-            formFuncionalidade.querySelector('[name="nome"]').value = funcionalidade.nome;
-            formFuncionalidade.querySelector('[name="relator"]').value = funcionalidade.relator;
-            formFuncionalidade.querySelector('[name="prioridade"]').value = funcionalidade.prioridade;
-            formFuncionalidade.querySelector('[name="descricao"]').value = funcionalidade.descricao || '';
-            idFuncionalidadeEdicaoInput.value = funcionalidade.id || '';
-
-            let imagemInput = formFuncionalidade.querySelector('[name="imagem"]');
-            let imagemExistenteInput = formFuncionalidade.querySelector('[name="imagem_existente"]');
-            let imagemPreview = formFuncionalidade.querySelector('.imagem-preview'); // Seletor para a div de preview
-
-            if (funcionalidade.imagem) {
-                const nomeArquivo = funcionalidade.imagem.split('/').pop();
-                if (!imagemExistenteInput) {
-                    imagemExistenteInput = document.createElement('input');
-                    imagemExistenteInput.type = 'hidden';
-                    imagemExistenteInput.name = 'imagem_existente';
-                    formFuncionalidade.appendChild(imagemExistenteInput);
+            // Métodos para controle de modais e dropdowns
+            abrirModalCadastro: function() {
+                this.modalTitle.textContent = 'Nova Funcionalidade';
+                this.salvarButton.textContent = 'Salvar';
+                this.formFuncionalidade.reset();
+                this.idFuncionalidadeEdicaoInput.value = '';
+                const imagemExistenteInput = this.formFuncionalidade.querySelector('[name="imagem_existente"]');
+                if (imagemExistenteInput) {
+                    imagemExistenteInput.remove();
                 }
-                imagemExistenteInput.value = nomeArquivo;
-
-                // Exibe o nome do arquivo abaixo do input de imagem
-                if (!imagemPreview) {
-                    imagemPreview = document.createElement('div');
-                    imagemPreview.className = 'imagem-preview text-sm text-gray-500 mt-1';
-                    imagemInput.parentNode.insertBefore(imagemPreview, imagemInput.nextSibling);
-                }
-                imagemPreview.textContent = `Arquivo selecionado: ${nomeArquivo}`;
-            } else if (imagemExistenteInput) {
-                imagemExistenteInput.remove();
+                const imagemPreview = this.formFuncionalidade.querySelector('.imagem-preview');
                 if (imagemPreview) {
-                    imagemPreview.remove(); // Remove o preview se não houver imagem
+                    imagemPreview.remove();
                 }
-            } else if (imagemPreview){
-                imagemPreview.remove();
-            }
+                this.modalCadastro.classList.remove('hidden');
+            },
 
-            // Limpa o valor do input de arquivo para evitar envios incorretos
-            imagemInput.value = '';
+            fecharModalCadastro: function() {
+                this.modalCadastro.classList.add('hidden');
+            },
 
-            modalCadastro.classList.remove('hidden');
-        }
+            abrirVisualizacaoDetalhada: function(funcionalidade) {
+                this.visualizarNome.textContent = funcionalidade.nome;
+                this.visualizarRelator.textContent = funcionalidade.relator;
+                this.visualizarPrioridade.textContent = funcionalidade.prioridade;
+                this.visualizarDescricao.textContent = funcionalidade.descricao || 'Nenhuma descrição';
+                this.visualizarCriadoEm.textContent = new Date(funcionalidade.criado_em).toLocaleDateString();
 
-        async function carregarFuncionalidades() {
-            const res = await fetch("http://localhost:8000/funcionalidades");
-            const funcionalidades = await res.json();
-            tabela.innerHTML = funcionalidades.map(f => {
-                // Escapa aspas simples e duplas para o JSON.stringify em atributos HTML
-                const funcionalidadeString = JSON.stringify(f).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-                return `
-                    <tr>
-                        <td class="p-3">${f.nome}</td>
-                        <td class="p-3">${f.prioridade}</td>
-                        <td class="p-3">${f.relator}</td>
-                        <td class="p-3">${new Date(f.criado_em).toLocaleDateString()}</td>
-                        <td class="p-3 flex gap-2 justify-center items-center">
-                            <button title="Visualizar" onclick='abrirVisualizacaoDetalhada(${funcionalidadeString})' class="text-blue-600 hover:text-blue-800 p-1 rounded-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                </svg>
-                            </button>
-                            <button title="Editar" onclick='abrirModalEdicao(${funcionalidadeString})' class="text-yellow-600 hover:text-yellow-800 p-1 rounded-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                </svg>
-                            </button>
-                            <button title="Deletar" onclick='deletarFuncionalidade(${f.id})' class="text-red-600 hover:text-red-800 p-1 rounded-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.56 0c1.153 0 2.242.078 3.288.227m8.978 0A48.966 48.966 0 0 1 12 4.5c-2.291 0-4.545.232-6.75.673m13.5 0c-.341.053-.68.107-1.022.165M5.78 5.79L4.247 3.337A1.875 1.875 0 0 1 6.12 2.079h11.76a1.875 1.875 0 0 1 1.874 1.257l-1.532 2.453M12 14.25v-2.625" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
+                if (funcionalidade.imagem) {
+                    const link = document.createElement('a');
+                    link.href = `http://localhost:8000/uploads/${funcionalidade.imagem.split('/').pop()}`;
+                    link.textContent = funcionalidade.imagem.split('/').pop();
+                    link.target = '_blank';
+                    this.visualizarImagemLink.innerHTML = '';
+                    this.visualizarImagemLink.appendChild(link);
+                } else {
+                    this.visualizarImagemLink.textContent = 'Nenhum anexo';
+                }
+
+                this.promptVisualizacaoInput.value = funcionalidade.descricao || '';
+                this.visualizacaoDetalhada.dataset.currentId = funcionalidade.id;
+                this.visualizacaoDetalhada.classList.remove('hidden');
+            },
+
+            fecharVisualizacaoDetalhada: function() {
+                this.visualizacaoDetalhada.classList.add('hidden');
+                delete this.visualizacaoDetalhada.dataset.currentId;
+                this.respostaVisualizacaoDiv.textContent = "A resposta aparecerá aqui..."; // Limpa a resposta do ChatGPT
+            },
+
+            abrirModalEdicao: function(funcionalidade) {
+                this.modalTitle.textContent = 'Editar Funcionalidade';
+                this.salvarButton.textContent = 'Atualizar';
+                this.formFuncionalidade.reset();
+
+                this.formFuncionalidade.querySelector('[name="nome"]').value = funcionalidade.nome;
+                this.formFuncionalidade.querySelector('[name="relator"]').value = funcionalidade.relator;
+                this.formFuncionalidade.querySelector('[name="prioridade"]').value = funcionalidade.prioridade;
+                this.formFuncionalidade.querySelector('[name="descricao"]').value = funcionalidade.descricao || '';
+                this.idFuncionalidadeEdicaoInput.value = funcionalidade.id || '';
+
+                let imagemInput = this.formFuncionalidade.querySelector('[name="imagem"]');
+                let imagemExistenteInput = this.formFuncionalidade.querySelector('[name="imagem_existente"]');
+                let imagemPreview = this.formFuncionalidade.querySelector('.imagem-preview');
+
+                if (funcionalidade.imagem) {
+                    const nomeArquivo = funcionalidade.imagem.split('/').pop();
+                    if (!imagemExistenteInput) {
+                        imagemExistenteInput = document.createElement('input');
+                        imagemExistenteInput.type = 'hidden';
+                        imagemExistenteInput.name = 'imagem_existente';
+                        this.formFuncionalidade.appendChild(imagemExistenteInput);
+                    }
+                    imagemExistenteInput.value = nomeArquivo;
+
+                    if (!imagemPreview) {
+                        imagemPreview = document.createElement('div');
+                        imagemPreview.className = 'imagem-preview text-sm text-gray-500 mt-1';
+                        imagemInput.parentNode.insertBefore(imagemPreview, imagemInput.nextSibling);
+                    }
+                    imagemPreview.textContent = `Arquivo selecionado: ${nomeArquivo}`;
+                } else if (imagemExistenteInput) {
+                    imagemExistenteInput.remove();
+                    if (imagemPreview) {
+                        imagemPreview.remove();
+                    }
+                } else if (imagemPreview) {
+                    imagemPreview.remove();
+                }
+
+                imagemInput.value = '';
+                this.modalCadastro.classList.remove('hidden');
+            },
+
+            toggleActionsMenu: function(event, funcionalidade, clickedButton) {
+                event.stopPropagation();
+
+                if (!this.actionsDropdown.classList.contains('hidden') && this.currentActionButton === clickedButton) {
+                    this.hideActionsDropdown();
+                    this.currentActionButton = null;
+                    return;
+                }
+
+                this.hideActionsDropdown();
+
+                const funcionalidadeString = JSON.stringify(funcionalidade).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+
+                this.actionsDropdown.innerHTML = `
+                    <div class="py-1">
+                        <button onclick='UI.abrirVisualizacaoDetalhada(${funcionalidadeString}); UI.hideActionsDropdown()' class="block w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            Visualizar
+                        </button>
+                        <button onclick='UI.abrirModalEdicao(${funcionalidadeString}); UI.hideActionsDropdown()' class="block w-full text-left px-4 py-2 text-sm text-yellow-600 hover:bg-gray-100 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                            </svg>
+                            Editar
+                        </button>
+                        <button onclick='APIs.deletarFuncionalidade(${funcionalidade.id}); UI.hideActionsDropdown()' class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.56 0c1.153 0 2.242.078 3.288.227m8.978 0A48.966 48.966 0 0 1 12 4.5c-2.291 0-4.545.232-6.75.673m13.5 0c-.341.053-.68.107-1.022.165M5.78 5.79L4.247 3.337A1.875 1.875 0 0 1 6.12 2.079h11.76a1.875 1.875 0 0 1 1.874 1.257l-1.532 2.453M12 14.25v-2.625" />
+                            </svg>
+                            Deletar
+                        </button>
+                    </div>
                 `;
-            }).join('');
-        }
 
-        async function deletarFuncionalidade(id) {
-            if (confirm('Tem certeza que deseja deletar esta funcionalidade? Esta ação não pode ser desfeita.')) {
+                const buttonRect = clickedButton.getBoundingClientRect();
+                this.actionsDropdown.style.top = `${buttonRect.bottom + window.scrollY + 5}px`;
+
+                const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+                const dropdownWidth = this.actionsDropdown.offsetWidth;
+                const padding = 10;
+
+                let finalLeftPosition;
+
+                const desiredLeftIfOpensRight = buttonRect.left + window.scrollX;
+                const rightEdgeIfOpensRight = desiredLeftIfOpensRight + dropdownWidth;
+
+                if (rightEdgeIfOpensRight + padding > viewportWidth) {
+                    const desiredLeftIfOpensLeft = buttonRect.right + window.scrollX - dropdownWidth;
+                    if (desiredLeftIfOpensLeft < padding) {
+                        finalLeftPosition = padding;
+                    } else {
+                        finalLeftPosition = desiredLeftIfOpensLeft;
+                    }
+                } else {
+                    finalLeftPosition = desiredLeftIfOpensRight;
+                }
+
+                this.actionsDropdown.style.left = `${finalLeftPosition}px`;
+                this.actionsDropdown.classList.remove('hidden');
+                this.currentActionButton = clickedButton;
+            },
+
+            hideActionsDropdown: function() {
+                this.actionsDropdown.classList.add('hidden');
+                this.currentActionButton = null;
+            },
+
+            renderizarTabela: function(funcionalidades) {
+                this.tabela.innerHTML = funcionalidades.map(f => {
+                    const funcionalidadeString = JSON.stringify(f).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                    return `
+                        <tr>
+                            <td class="p-3 text-center"><input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"></td>
+                            <td class="p-3">Sistema projeto</td>
+                            <td class="p-3">${f.nome}</td>
+                            <td class="p-3">${f.prioridade}</td>
+                            <td class="p-3">${f.relator}</td>
+                            <td class="p-3 text-center relative">
+                                <button title="Ações" data-funcionalidade='${funcionalidadeString}' class="action-button text-gray-600 hover:text-gray-800 p-1 rounded-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                document.querySelectorAll('.action-button').forEach(button => {
+                    button.addEventListener('click', function(event) {
+                        const funcionalidade = JSON.parse(this.dataset.funcionalidade.replace(/&quot;/g, '"').replace(/&apos;/g, "'"));
+                        UI.toggleActionsMenu(event, funcionalidade, this);
+                    });
+                });
+            }
+        };
+
+        // Objeto para gerenciar as chamadas de API
+        const APIs = {
+            BASE_URL: "http://localhost:8000",
+
+            carregarFuncionalidades: async function() {
                 try {
-                    const response = await fetch(`http://localhost:8000/funcionalidades/${id}`, {
-                        method: 'DELETE'
+                    const res = await fetch(`${this.BASE_URL}/funcionalidades`);
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    const funcionalidades = await res.json();
+                    UI.renderizarTabela(funcionalidades);
+                } catch (error) {
+                    console.error('Erro ao carregar funcionalidades:', error);
+                    alert('Não foi possível carregar as funcionalidades. Verifique a conexão com o servidor.');
+                }
+            },
+
+            salvarFuncionalidade: async function(formData) {
+                const idEdicao = formData.get('id');
+                let url = `${this.BASE_URL}/funcionalidades`;
+                let method = 'POST';
+
+                if (idEdicao) {
+                    url = `${this.BASE_URL}/funcionalidades/${idEdicao}`;
+                    method = 'PUT';
+                }
+
+                const imagemInput = document.querySelector('[name="imagem"]');
+                if (imagemInput && imagemInput.files.length === 0) {
+                    formData.delete('imagem');
+                }
+
+                try {
+                    const response = await fetch(url, {
+                        method: method,
+                        body: formData
                     });
 
                     if (response.ok) {
-                        alert('Funcionalidade deletada com sucesso!');
-                        carregarFuncionalidades(); // Recarrega a lista
-                        
-                        // Se a visualização detalhada estiver aberta e for o item deletado, fechar
-                        if (!visualizacaoDetalhada.classList.contains('hidden') && visualizacaoDetalhada.dataset.currentId == String(id)) {
-                            fecharVisualizacaoDetalhada();
-                        }
+                        UI.formFuncionalidade.reset();
+                        UI.fecharModalCadastro();
+                        this.carregarFuncionalidades();
+                        alert(`Funcionalidade ${idEdicao ? 'atualizada' : 'cadastrada'} com sucesso!`);
                     } else {
                         const errorData = await response.json().catch(() => ({ detail: response.statusText }));
-                        alert(`Erro ao deletar funcionalidade: ${errorData.detail || response.statusText}`);
-                        console.error('Erro ao deletar:', errorData);
+                        alert(`Erro ao ${idEdicao ? 'atualizar' : 'cadastrar'} funcionalidade: ${errorData.detail || response.statusText}`);
+                        console.error('Erro na requisição:', errorData);
                     }
                 } catch (error) {
-                    alert('Erro de conexão ao tentar deletar funcionalidade.');
+                    alert('Erro de conexão ao tentar salvar funcionalidade.');
                     console.error('Erro de conexão:', error);
                 }
-            }
-        }
+            },
 
-        document.getElementById('formFuncionalidade').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = new FormData(e.target);
-    const idEdicao = form.get('id');
-    let url = "http://localhost:8000/funcionalidades";
-    let method = 'POST';
+            deletarFuncionalidade: async function(id) {
+                if (confirm('Tem certeza que deseja deletar esta funcionalidade? Esta ação não pode ser desfeita.')) {
+                    try {
+                        const response = await fetch(`${this.BASE_URL}/funcionalidades/${id}`, {
+                            method: 'DELETE'
+                        });
 
-    if (idEdicao) {
-        url = `http://localhost:8000/funcionalidades/${idEdicao}`;
-        method = 'PUT';
-    }
-
-    // Remove o campo 'imagem' se nenhum novo arquivo foi selecionado
-    const imagemInput = document.querySelector('[name="imagem"]');
-    if (imagemInput && imagemInput.files.length === 0) {
-        form.delete('imagem');
-    }
-
-    const response = await fetch(url, {
-        method: method,
-        body: form
-    });
-
-    if (response.ok) {
-        e.target.reset();
-        fecharModalCadastro();
-        carregarFuncionalidades();
-        alert(`Funcionalidade ${idEdicao ? 'atualizada' : 'cadastrada'} com sucesso!`);
-    } else {
-        const errorData = await response.json();
-        alert(`Erro ao ${idEdicao ? 'atualizar' : 'cadastrar'} funcionalidade: ${errorData.detail || response.statusText}`);
-        console.error(errorData);
-    }
-});
-
-        async function enviarPromptVisualizacao() {
-            const prompt = promptVisualizacaoInput.value;
-            respostaVisualizacaoDiv.textContent = "Pensando...";
-
-            try {
-                const response = await fetch("http://localhost:8000/generate_bdd", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ user_story: prompt })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    respostaVisualizacaoDiv.textContent = data.bdd_scenarios || "Resposta gerada.";
-                } else {
-                    respostaVisualizacaoDiv.textContent = `Erro na requisição: ${data.detail || response.statusText}`;
+                        if (response.ok) {
+                            alert('Funcionalidade deletada com sucesso!');
+                            this.carregarFuncionalidades();
+                            if (!UI.visualizacaoDetalhada.classList.contains('hidden') && UI.visualizacaoDetalhada.dataset.currentId == String(id)) {
+                                UI.fecharVisualizacaoDetalhada();
+                            }
+                        } else {
+                            const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+                            alert(`Erro ao deletar funcionalidade: ${errorData.detail || response.statusText}`);
+                            console.error('Erro ao deletar:', errorData);
+                        }
+                    } catch (error) {
+                        alert('Erro de conexão ao tentar deletar funcionalidade.');
+                        console.error('Erro de conexão:', error);
+                    }
                 }
-            } catch (error) {
-                respostaVisualizacaoDiv.textContent = "Erro ao comunicar com o servidor.";
-                console.error(error);
-            }
-        }
+            },
 
-        window.onload = carregarFuncionalidades;
+            enviarPromptVisualizacao: async function() {
+                const prompt = UI.promptVisualizacaoInput.value;
+                UI.respostaVisualizacaoDiv.textContent = "Pensando...";
+
+                try {
+                    const response = await fetch(`${this.BASE_URL}/generate_bdd`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ user_story: prompt })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        UI.respostaVisualizacaoDiv.textContent = data.bdd_scenarios || "Resposta gerada.";
+                    } else {
+                        UI.respostaVisualizacaoDiv.textContent = `Erro na requisição: ${data.detail || response.statusText}`;
+                        console.error('Erro ao gerar BDD:', data);
+                    }
+                } catch (error) {
+                    UI.respostaVisualizacaoDiv.textContent = "Erro ao comunicar com o servidor.";
+                    console.error('Erro de conexão com a API BDD:', error);
+                }
+            }
+        };
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            APIs.carregarFuncionalidades();
+        });
+
+        UI.formFuncionalidade.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = new FormData(e.target);
+            await APIs.salvarFuncionalidade(form);
+        });
+
+        document.addEventListener('click', (event) => {
+            // Esconde o dropdown de ações se o clique for fora dele ou do botão que o acionou
+            if (!UI.actionsDropdown.classList.contains('hidden') && !UI.actionsDropdown.contains(event.target) && !event.target.closest('.action-button')) {
+                UI.hideActionsDropdown();
+            }
+        });
     </script>
 
 </body>
