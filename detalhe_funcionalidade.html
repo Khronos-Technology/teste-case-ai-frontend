@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes da Funcionalidade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the Jira-like table layout */
+        .jira-table-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .jira-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+        }
+        .jira-card-header {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1a202c; /* gray-900 */
+        }
+        .scenario-box {
+            background-color: #f3f4f6; /* gray-100 */
+            border: 1px solid #e5e7eb; /* gray-200 */
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            word-break: break-word; /* Ensures long text breaks within the box */
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4f46e5; /* indigo-600 */
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .scenario-box:hover .copy-button {
+            opacity: 1;
+        }
+        .copy-button:active {
+            background-color: #4338ca; /* indigo-700 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <nav class="bg-blue-900 text-white p-4 flex justify-between items-center shadow-md">
+        <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-green-400 mr-2">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+            </svg>
+            <span class="text-xl font-bold">testcaseAI</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="flex items-center text-gray-300 hover:text-white transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 0 12 21.75c-2.676 0-5.216-.584-7.5-1.632Z" />
+                </svg>
+                Perfil
+            </button>
+            <button class="flex items-center text-gray-300 hover:text-white transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.17.992c.07.4-.108.803-.472 1.068L15.7 7.5c-.347.24-.555.626-.54 1.03l.02.246c.01.29.157.564.407.743l1.192.857c.414.295.667.817.625 1.356l-.088 1.302c-.04.53-.466.96-.995 1.077l-.966.233c-.4.096-.75.32-.977.658L12 18.88c-.227.338-.577.562-.977.658l-.966-.233c-.529-.117-.955-.546-.995-1.076l-.088-1.302c-.042-.539.21-1.061.625-1.356l1.192-.857c.25-.179.397-.453.407-.743l.02-.246c.015-.403-.153-.789-.5-1.03l-2.07-1.5c-.364-.265-.542-.668-.472-1.068l.17-.992Zm.974 6.84a2 2 0 1 0 2.21-3.328 2 0 0 0-2.21 3.328Z" />
+                </svg>
+                Configurações
+            </button>
+            <button id="logoutButton" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md text-sm ml-4 transition duration-200">Sair</button>
+        </div>
+    </nav>
+
+    <div class="bg-blue-800 text-white p-2 flex justify-start items-center space-x-2 px-4 shadow-sm">
+        <button onclick="window.location.href='cadastro_funcionalidade.html'" class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition duration-200">Casos de Teste</button>
+        <button class="bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white transition duration-200">Área de Trabalho</button>
+        <button class="bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white transition duration-200">Testes em Execução</button>
+    </div>
+
+    <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-3xl font-extrabold text-gray-900">Detalhes da Funcionalidade</h1>
+                    <button onclick="window.location.href='cadastro_funcionalidade.html'" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition duration-200">Voltar para a Lista</button>
+                </div>
+                <hr class="my-4 border-gray-200">
+                <div id="detalhes-funcionalidade" class="space-y-3 text-lg">
+                    <p><strong class="font-semibold text-gray-700">Nome:</strong> <span id="visualizar-nome" class="text-gray-900"></span></p>
+                    <p><strong class="font-semibold text-gray-700">Relator:</strong> <span id="visualizar-relator" class="text-gray-900"></span></p>
+                    <p><strong class="font-semibold text-gray-700">Prioridade:</strong> <span id="visualizar-prioridade" class="text-gray-900"></span></p>
+                    <p><strong class="font-semibold text-gray-700">Descrição:</strong> <span id="visualizar-descricao" class="text-gray-900"></span></p>
+                    <p><strong class="font-semibold text-gray-700">Criado em:</strong> <span id="visualizar-criado_em" class="text-gray-900"></span></p>
+                    <p><strong class="font-semibold text-gray-700">Anexo:</strong> <span id="visualizar-imagem-link" class="text-blue-600 hover:underline"></span></p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold mb-4 text-gray-900">Geração de Casos de Teste com IA</h2>
+                <textarea id="prompt-visualizacao" class="w-full p-3 border border-gray-300 rounded-md mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 h-32 resize-y" placeholder="A descrição da funcionalidade será usada como prompt para gerar casos de teste..." readonly></textarea>
+                <button id="gerarCasosTesteBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-md shadow-md transition duration-200">Gerar Casos de Teste</button>
+                <div id="resposta-visualizacao" class="mt-6 p-4 border border-gray-300 rounded-md bg-gray-50 whitespace-pre-wrap overflow-y-auto max-h-96 text-gray-800 text-sm">
+                    A resposta da IA com os cenários de teste aparecerá aqui.
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold mb-4 text-gray-900">Cenários para Xray</h2>
+                <p class="text-gray-600 mb-4">Copie os cenários abaixo e cole-os diretamente no Xray.</p>
+                <div id="xray-scenarios-container" class="space-y-4">
+                    <div class="scenario-box">
+                        <pre class="text-sm text-gray-800">
+Scenario: Exemplo de Cenário 1
+    Given que o usuário está logado
+    When ele navega para a página inicial
+    Then a página inicial deve ser exibida corretamente
+                        </pre>
+                        <button class="copy-button" onclick="copyToClipboard(this)">Copiar</button>
+                    </div>
+                    <div class="scenario-box">
+                        <pre class="text-sm text-gray-800">
+Scenario: Exemplo de Cenário 2
+    Given que o produto X está disponível
+    When o usuário adiciona o produto X ao carrinho
+    Then o produto X deve ser exibido no carrinho com a quantidade 1
+                        </pre>
+                        <button class="copy-button" onclick="copyToClipboard(this)">Copiar</button>
+                    </div>
+                    <div class="scenario-box">
+                        <pre class="text-sm text-gray-800">
+Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
+    Given um usuário com permissões de administrador
+    When ele tenta deletar um item crítico
+    Then o sistema deve exibir uma mensagem de confirmação
+                        </pre>
+                        <button class="copy-button" onclick="copyToClipboard(this)">Copiar</button>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to check authentication on page load
+        function checkAuthentication() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                // Redirect to login page if no token
+                window.location.href = 'index.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Add listener for the logout button
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('token_type');
+            window.location.href = 'index.html';
+        });
+
+        const APIs = {
+            API_BASE_URL: "http://localhost:8000", // Certifique-se de que esta URL está correta
+
+            getAuthHeaders: function() {
+                const token = localStorage.getItem('access_token');
+                const tokenType = localStorage.getItem('token_type');
+                if (token && tokenType) {
+                    return {
+                        'Authorization': `${tokenType} ${token}`,
+                        'Content-Type': 'application/json'
+                    };
+                }
+                // Se o token não existir, force o redirecionamento.
+                // Idealmente, a autenticação seria verificada em um ponto mais centralizado.
+                window.location.href = 'index.html';
+                throw new Error("Token de autenticação não encontrado. Redirecionando para o login.");
+            },
+
+            // Função enviarPromptVisualizacao revertida para o comportamento anterior
+            // Ela agora não espera argumentos e pega o valor do prompt-visualizacao
+            enviarPromptVisualizacao: async function() {
+                // Pega a história do usuário diretamente do textarea, como era antes
+                const userStory = document.getElementById('prompt-visualizacao').value;
+                if (!userStory) {
+                    alert("Por favor, preencha a descrição da funcionalidade para gerar cenários.");
+                    return;
+                }
+
+                const respostaDiv = document.getElementById('resposta-visualizacao');
+                respostaDiv.textContent = 'Gerando cenários BDD...'; // Mensagem original
+                respostaDiv.classList.add('animate-pulse');
+
+                try {
+                    const headers = this.getAuthHeaders();
+                    // Chamada para o endpoint original '/generate_bdd'
+                    const response = await fetch(`${this.API_BASE_URL}/generate_bdd`, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify({ user_story: userStory, temperature: 0.7 }) // Corpo da requisição original
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return;
+                        }
+                        const errorData = await response.json();
+                        throw new Error(`Erro ao gerar BDD: ${errorData.detail || response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    if (data.error) {
+                        respostaDiv.textContent = `Erro da IA: ${data.error}`; // 'Gemini' ou 'IA'
+                        respostaDiv.style.color = '#ef5350';
+                    } else {
+                        respostaDiv.textContent = data.bdd_scenarios; // Espera 'bdd_scenarios'
+                        respostaDiv.style.color = '#2d3748';
+                        populateXrayScenarios(data.bdd_scenarios); // Popula Xray com o campo correto
+                    }
+                } catch (error) {
+                    console.error("Erro ao chamar a API de geração de cenários:", error);
+                    respostaDiv.textContent = "Erro ao gerar cenários BDD. " + error.message;
+                    respostaDiv.style.color = '#ef5350';
+                } finally {
+                    respostaDiv.classList.remove('animate-pulse');
+                }
+            },
+
+            // Function to load feature details by ID (mantida sem alterações, pois já funciona)
+            carregarDetalhesFuncionalidade: async function(id) {
+                try {
+                    const headers = this.getAuthHeaders();
+                    delete headers['Content-Type']; // GET request does not need Content-Type
+                    const response = await fetch(`${this.API_BASE_URL}/funcionalidades/${id}`, {
+                        method: 'GET',
+                        headers: headers
+                    });
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
+                            localStorage.removeItem('access_token');
+                            localStorage.removeItem('token_type');
+                            window.location.href = 'index.html';
+                            return null;
+                        }
+                        throw new Error(`Erro ao carregar detalhes: ${response.statusText}`);
+                    }
+                    const funcionalidade = await response.json();
+                    return funcionalidade;
+                } catch (error) {
+                    console.error("Erro ao carregar detalhes da funcionalidade:", error);
+                    alert("Erro ao carregar detalhes: " + error.message);
+                    return null;
+                }
+            }
+        };
+
+        // Function to populate details on the screen when the page loads
+        async function preencherDetalhesFuncionalidade() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const funcionalidadeId = urlParams.get('id');
+
+            if (!funcionalidadeId) {
+                alert('ID da funcionalidade não fornecido.');
+                window.location.href = 'cadastro_funcionalidade.html'; // Go back to the list if no ID
+                return;
+            }
+
+            const funcionalidade = await APIs.carregarDetalhesFuncionalidade(funcionalidadeId);
+
+            if (funcionalidade) {
+                document.getElementById('visualizar-nome').textContent = funcionalidade.nome;
+                document.getElementById('visualizar-relator').textContent = funcionalidade.relator;
+                document.getElementById('visualizar-prioridade').textContent = funcionalidade.prioridade;
+                document.getElementById('visualizar-descricao').textContent = funcionalidade.descricao || 'Nenhuma descrição';
+                document.getElementById('visualizar-criado_em').textContent = new Date(funcionalidade.criado_em).toLocaleDateString();
+
+                if (funcionalidade.imagem) {
+                    const link = document.createElement('a');
+                    const nomeArquivo = funcionalidade.imagem.split('/').pop();
+                    link.href = `${APIs.API_BASE_URL}/uploads/${nomeArquivo}`;
+                    link.textContent = nomeArquivo;
+                    link.target = '_blank';
+                    document.getElementById('visualizar-imagem-link').innerHTML = '';
+                    document.getElementById('visualizar-imagem-link').appendChild(link);
+                } else {
+                    document.getElementById('visualizar-imagem-link').textContent = 'Nenhum anexo';
+                }
+
+                // Preenche o textarea 'prompt-visualizacao' com a descrição da funcionalidade
+                // Isso é essencial, pois 'enviarPromptVisualizacao' agora lerá daqui.
+                document.getElementById('prompt-visualizacao').value = funcionalidade.descricao || '';
+
+                // Adiciona o event listener para o botão "Gerar Casos de Teste"
+                // Agora, ele chamará enviarPromptVisualizacao() sem argumentos,
+                // que por sua vez, lerá o prompt do textarea.
+                document.getElementById('gerarCasosTesteBtn').addEventListener('click', APIs.enviarPromptVisualizacao.bind(APIs));
+
+            } else {
+                alert('Não foi possível carregar os detalhes da funcionalidade.');
+                window.location.href = 'cadastro_funcionalidade.html';
+            }
+        }
+
+        // Function to parse and display scenarios for Xray
+function populateXrayScenarios(responseText) {
+    const container = document.getElementById('xray-scenarios-container');
+    container.innerHTML = ''; // Clear previous scenarios
+
+    // Split the AI response into individual lines
+    const lines = responseText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    let currentScenarioSteps = [];
+    const scenarios = [];
+    let scenarioTitle = 'Cenário Padrão'; // Default title if not explicitly found
+
+    // This logic attempts to reconstruct Gherkin based on "Dado que", "Quando", "Então" keywords
+    // in Portuguese. It assumes a new scenario either starts with "Dado que" or "Cenário:".
+    lines.forEach(line => {
+        if (line.startsWith('Cenário:') || line.startsWith('Feature:')) {
+            // If a new scenario title is found, push the previous one (if any)
+            if (currentScenarioSteps.length > 0) {
+                scenarios.push({
+                    title: scenarioTitle,
+                    steps: currentScenarioSteps
+                });
+                currentScenarioSteps = [];
+            }
+            scenarioTitle = line.replace(/^(Cenário|Feature):\s*/, '').trim();
+        } else if (line.startsWith('Dado que') || line.startsWith('Quando') || line.startsWith('Então') || line.startsWith('E ') || line.startsWith('Mas ')) {
+            // If a step line is found, add it to the current scenario's steps
+            // If this is the very first step of a new implicit scenario (no "Scenario:" line before),
+            // use "Dado que" as part of the title.
+            if (currentScenarioSteps.length === 0 && !line.startsWith('Dado que')) {
+                 // This condition helps ensure we group steps correctly if there's no explicit scenario title
+                 // It prevents "Quando" or "Então" from starting a new scenario if "Dado que" is missing
+            }
+            currentScenarioSteps.push(line);
+        } else {
+            // For any other lines (e.g., descriptive text within a scenario, or blank lines),
+            // just add them as part of the current scenario steps.
+            currentScenarioSteps.push(line);
+        }
+    });
+
+    // Add the last collected scenario
+    if (currentScenarioSteps.length > 0) {
+        scenarios.push({
+            title: scenarioTitle,
+            steps: currentScenarioSteps
+        });
+    }
+
+    if (scenarios.length > 0) {
+        scenarios.forEach(scenarioData => {
+            const scenarioBox = document.createElement('div');
+            scenarioBox.classList.add('scenario-box');
+
+            const preElement = document.createElement('pre');
+            preElement.classList.add('text-sm', 'text-gray-800');
+
+            // Format the scenario for Xray/Gherkin
+            let formattedScenario = `Scenario: ${scenarioData.title}\n`;
+            scenarioData.steps.forEach(step => {
+                let formattedStep = step;
+                if (step.startsWith('Dado que ')) {
+                    formattedStep = `  Given ${step.substring('Dado que '.length)}`;
+                } else if (step.startsWith('Quando ')) {
+                    formattedStep = `  When ${step.substring('Quando '.length)}`;
+                } else if (step.startsWith('Então ')) {
+                    formattedStep = `  Then ${step.substring('Então '.length)}`;
+                } else if (step.startsWith('E ')) {
+                    formattedStep = `  And ${step.substring('E '.length)}`;
+                } else if (step.startsWith('Mas ')) {
+                    formattedStep = `  But ${step.substring('Mas '.length)}`;
+                } else if (step.startsWith('Cenário:') || step.startsWith('Feature:')) {
+                    formattedStep = ''; // Don't duplicate the scenario/feature title if it was parsed as a step
+                } else {
+                    formattedStep = `  ${step}`; // For any other lines, just indent them
+                }
+                if (formattedStep) { // Only add if not empty
+                    formattedScenario += formattedStep + '\n';
+                }
+            });
+            preElement.textContent = formattedScenario.trim(); // Trim extra newlines
+
+            scenarioBox.appendChild(preElement);
+
+            const copyButton = document.createElement('button');
+            copyButton.classList.add('copy-button');
+            copyButton.textContent = 'Copiar';
+            copyButton.onclick = () => copyToClipboard(copyButton);
+            scenarioBox.appendChild(copyButton);
+
+            container.appendChild(scenarioBox);
+        });
+    } else {
+        container.innerHTML = '<p class="text-gray-500">Nenhum cenário de teste encontrado na resposta da IA. Certifique-se de que a IA está gerando cenários no formato Gherkin (Scenario: Given, When, Then) ou em um formato que possa ser interpretado (e.g., "Dado que...", "Quando...", "Então...").</p>';
+    }
+}
+
+        // Function to copy text to clipboard
+        function copyToClipboard(buttonElement) {
+            const scenarioBox = buttonElement.closest('.scenario-box');
+            const preElement = scenarioBox.querySelector('pre');
+            const textToCopy = preElement.textContent;
+
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    const originalText = buttonElement.textContent;
+                    buttonElement.textContent = 'Copiado!';
+                    buttonElement.classList.add('bg-green-600', 'hover:bg-green-700');
+                    setTimeout(() => {
+                        buttonElement.textContent = originalText;
+                        buttonElement.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Falha ao copiar texto: ', err);
+                    alert('Erro ao copiar texto. Por favor, tente novamente.');
+                });
+        }
+
+        // Call the function when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuthentication()) {
+                preencherDetalhesFuncionalidade();
+            }
+        });
+    </script>
+</body>
+</html>

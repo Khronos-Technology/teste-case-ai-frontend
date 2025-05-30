@@ -114,27 +114,6 @@
         </div>
     </div>
 
-    <div id="visualizacao-detalhada" class="hidden flex gap-6 mt-6 p-6">
-        <div id="detalhes-funcionalidade-container" class="bg-white p-6 rounded-md shadow-md flex-1">
-            <h2 class="text-xl font-semibold mb-4">Detalhes da Funcionalidade</h2>
-            <div id="detalhes-funcionalidade" class="space-y-2">
-                <p><strong class="font-semibold">Nome:</strong> <span id="visualizar-nome"></span></p>
-                <p><strong class="font-semibold">Relator:</strong> <span id="visualizar-relator"></span></p>
-                <p><strong class="font-semibold">Prioridade:</strong> <span id="visualizar-prioridade"></span></p>
-                <p><strong class="font-semibold">Descrição:</strong> <span id="visualizar-descricao"></span></p>
-                <p><strong class="font-semibold">Criado em:</strong> <span id="visualizar-criado_em"></span></p>
-                <p><strong class="font-semibold">Anexo:</strong> <span id="visualizar-imagem-link"></span></p>
-            </div>
-            <button onclick="UI.fecharVisualizacaoDetalhada()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md mt-4 inline-block">Fechar Detalhes</button>
-        </div>
-        <div id="chat-gpt-container" class="bg-white p-6 rounded-md shadow-md flex-1">
-            <h2 class="text-xl font-semibold mb-4">Prompt ChatGPT</h2>
-            <textarea id="prompt-visualizacao" class="w-full p-2 border rounded-md mb-4" placeholder="Digite seu prompt relacionado a esta funcionalidade..." readonly></textarea>
-            <button onclick="APIs.enviarPromptVisualizacao()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md">Gerar Casos de Teste</button>
-            <div id="resposta-visualizacao" class="mt-4 p-3 border rounded-md bg-gray-100 whitespace-pre-wrap overflow-y-auto max-h-96">A resposta aparecerá aqui...</div>
-        </div>
-    </div>
-
     <script>
         // Função para verificar a autenticação ao carregar a página
         function checkAuthentication() {
@@ -157,17 +136,7 @@
         // Objeto para gerenciar elementos da UI
         const UI = {
             modalCadastro: document.getElementById('modal-cadastro'),
-            visualizacaoDetalhada: document.getElementById('visualizacao-detalhada'),
-            detalhesFuncionalidadeContainer: document.getElementById('detalhes-funcionalidade'),
             tabela: document.getElementById('tabela-funcionalidades'),
-            visualizarNome: document.getElementById('visualizar-nome'),
-            visualizarRelator: document.getElementById('visualizar-relator'),
-            visualizarPrioridade: document.getElementById('visualizar-prioridade'),
-            visualizarDescricao: document.getElementById('visualizar-descricao'),
-            visualizarCriadoEm: document.getElementById('visualizar-criado_em'),
-            visualizarImagemLink: document.getElementById('visualizar-imagem-link'),
-            promptVisualizacaoInput: document.getElementById('prompt-visualizacao'),
-            respostaVisualizacaoDiv: document.getElementById('resposta-visualizacao'),
             formFuncionalidade: document.getElementById('formFuncionalidade'),
             modalTitle: document.querySelector('#modal-cadastro h2'),
             salvarButton: document.querySelector('#formFuncionalidade button[type="submit"]'),
@@ -195,38 +164,6 @@
 
             fecharModalCadastro: function() {
                 this.modalCadastro.classList.add('hidden');
-            },
-
-            abrirVisualizacaoDetalhada: function(funcionalidade) {
-                this.visualizarNome.textContent = funcionalidade.nome;
-                this.visualizarRelator.textContent = funcionalidade.relator;
-                this.visualizarPrioridade.textContent = funcionalidade.prioridade;
-                this.visualizarDescricao.textContent = funcionalidade.descricao || 'Nenhuma descrição';
-                this.visualizarCriadoEm.textContent = new Date(funcionalidade.criado_em).toLocaleDateString();
-
-                if (funcionalidade.imagem) {
-                    const link = document.createElement('a');
-                    // Certifique-se que o caminho da imagem está correto.
-                    // Se o backend retorna apenas o nome do arquivo, você precisa concatenar com a URL base de uploads.
-                    const nomeArquivo = funcionalidade.imagem.split('/').pop();
-                    link.href = `${APIs.API_BASE_URL}/uploads/${nomeArquivo}`;
-                    link.textContent = nomeArquivo;
-                    link.target = '_blank';
-                    this.visualizarImagemLink.innerHTML = '';
-                    this.visualizarImagemLink.appendChild(link);
-                } else {
-                    this.visualizarImagemLink.textContent = 'Nenhum anexo';
-                }
-
-                this.promptVisualizacaoInput.value = funcionalidade.descricao || '';
-                this.visualizacaoDetalhada.dataset.currentId = funcionalidade.id;
-                this.visualizacaoDetalhada.classList.remove('hidden');
-            },
-
-            fecharVisualizacaoDetalhada: function() {
-                this.visualizacaoDetalhada.classList.add('hidden');
-                delete this.visualizacaoDetalhada.dataset.currentId;
-                this.respostaVisualizacaoDiv.textContent = "A resposta aparecerá aqui..."; // Limpa a resposta do ChatGPT
             },
 
             abrirModalEdicao: function(funcionalidade) {
@@ -470,34 +407,10 @@
                 }
             },
 
+            // ALTERADO: Agora redireciona para a nova tela de detalhes
             carregarDetalhesFuncionalidade: async function(id) {
-                try {
-                    const headers = this.getAuthHeaders();
-                    delete headers['Content-Type']; // GET request, não precisa de Content-Type
-                    const response = await fetch(`${this.API_BASE_URL}/funcionalidades/${id}`, { // Alterado para buscar por ID
-                        method: 'GET',
-                        headers: headers
-                    });
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
-                            localStorage.removeItem('access_token');
-                            localStorage.removeItem('token_type');
-                            window.location.href = 'index.html';
-                            return;
-                        }
-                        throw new Error(`Erro ao carregar detalhes: ${response.statusText}`);
-                    }
-                    const funcionalidade = await response.json(); // Espera um único objeto, não uma lista
-                    if (funcionalidade) {
-                        UI.abrirVisualizacaoDetalhada(funcionalidade);
-                    } else {
-                        alert("Funcionalidade não encontrada para visualização.");
-                    }
-                } catch (error) {
-                    console.error("Erro ao carregar detalhes da funcionalidade:", error);
-                    alert("Erro ao carregar detalhes: " + error.message);
-                }
+                // Redireciona para a nova página de detalhes, passando o ID na URL
+                window.location.href = `detalhe_funcionalidade.html?id=${id}`;
             },
 
             carregarParaEdicao: async function(id) {
@@ -551,76 +464,37 @@
                         const errorData = await response.json();
                         throw new Error(`Erro ao deletar funcionalidade: ${errorData.detail || response.statusText}`);
                     }
-                    alert(`Funcionalidade "${nomeFuncionalidade}" deletada com sucesso!`);
                     await this.listarFuncionalidades(); // Recarrega a lista
+                    alert(`Funcionalidade "${nomeFuncionalidade}" deletada com sucesso!`);
                 } catch (error) {
                     console.error("Erro ao deletar funcionalidade:", error);
                     alert("Erro ao deletar funcionalidade: " + error.message);
                 }
             },
-
-            enviarPromptVisualizacao: async function() {
-                const userStory = UI.promptVisualizacaoInput.value;
-                if (!userStory) {
-                    alert("Por favor, digite uma história de usuário para gerar cenários BDD.");
-                    return;
-                }
-
-                UI.respostaVisualizacaoDiv.textContent = "Gerando cenários BDD...";
-                UI.respostaVisualizacaoDiv.style.color = '#4a5568'; // Cor de texto padrão
-
-                try {
-                    const response = await fetch(`${this.API_BASE_URL}/generate_bdd`, {
-                        method: 'POST',
-                        headers: this.getAuthHeaders(), // Isso já retorna Content-Type: application/json
-                        body: JSON.stringify({ user_story: userStory, temperature: 0.7 })
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
-                            localStorage.removeItem('access_token');
-                            localStorage.removeItem('token_type');
-                            window.location.href = 'index.html';
-                            return;
-                        }
-                        const errorData = await response.json();
-                        throw new Error(`Erro ao gerar BDD: ${errorData.detail || response.statusText}`);
-                    }
-
-                    const data = await response.json();
-                    if (data.error) {
-                        UI.respostaVisualizacaoDiv.textContent = `Erro do Gemini: ${data.error}`;
-                        UI.respostaVisualizacaoDiv.style.color = '#ef5350'; // Vermelho para erro
-                    } else {
-                        UI.respostaVisualizacaoDiv.textContent = data.bdd_scenarios;
-                        UI.respostaVisualizacaoDiv.style.color = '#2d3748'; // Cor de texto escuro para o resultado
-                    }
-                } catch (error) {
-                    console.error("Erro ao chamar a API Gemini:", error);
-                    UI.respostaVisualizacaoDiv.textContent = "Erro ao gerar cenários BDD. " + error.message;
-                    UI.respostaVisualizacaoDiv.style.color = '#ef5350'; // Vermelho
-                }
-            }
         };
 
-        // Adiciona o event listener para o formulário no carregamento do DOM.
-        // Usamos .bind(APIs) para garantir que 'this' dentro de salvarFuncionalidade
-        // sempre se refira ao objeto APIs, onde API_BASE_URL está definida.
+        // Adiciona o listener para o formulário de funcionalidade
         document.addEventListener('DOMContentLoaded', () => {
             if (checkAuthentication()) {
-                UI.formFuncionalidade.addEventListener('submit', APIs.salvarFuncionalidade.bind(APIs));
                 APIs.listarFuncionalidades();
-            }
+                UI.formFuncionalidade.addEventListener('submit', APIs.salvarFuncionalidade);
 
-            // Fechar dropdown de ações ao clicar fora
-            document.addEventListener('click', function(event) {
-                if (UI.currentActionButton && !UI.actionsDropdown.contains(event.target) && !UI.currentActionButton.contains(event.target)) {
-                    UI.fecharActionsDropdown();
-                }
-            });
+                // Fechar dropdown de ações ao clicar fora
+                document.addEventListener('click', function(event) {
+                    if (UI.currentActionButton && !UI.currentActionButton.contains(event.target) && !UI.actionsDropdown.contains(event.target)) {
+                        UI.fecharActionsDropdown();
+                    }
+                });
+            }
         });
 
+        // Lógica do checkbox "Selecionar Todos"
+        UI.selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
     </script>
 </body>
 </html>
