@@ -4,12 +4,33 @@
     <meta charset="UTF-8">
     <title>Funcionalidades</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
         /* Seção de Estilos Customizados */
         .imagem-preview {
             font-size: 0.875rem; /* Equivalente a text-sm no Tailwind */
             color: #6b7280; /* Equivalente a text-gray-500 no Tailwind */
             margin-top: 0.25rem; /* Equivalente a mt-1 no Tailwind */
+            display: flex; /* Adicionado para alinhar o texto e o botão */
+            align-items: center; /* Adicionado para alinhar o texto e o botão */
+            gap: 0.5rem; /* Espaçamento entre o texto e o botão */
+        }
+        .imagem-preview strong {
+            font-weight: 600; /* font-semibold */
+        }
+        .imagem-preview button {
+            color: #DC2626; /* Cor de perigo para o botão de remover */
+            transition: color 0.2s ease;
+            font-size: 0.875rem;
+            line-height: 1; /* Ajusta o alinhamento vertical do texto */
+        }
+        .imagem-preview button:hover {
+            color: #B91C1C; /* Hover do botão de perigo */
         }
 
         /* Estilo para o dropdown de ações */
@@ -21,11 +42,11 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
 
-    <nav class="bg-blue-900 text-white p-4 flex justify-between items-center">
+    <header class="bg-[#0D2B45] text-white p-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-green-400 mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-[#32C766] mr-2">
                 <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
             </svg>
             <span class="text-xl font-bold">testcaseAI</span>
@@ -39,18 +60,18 @@
             </svg>
             <button id="logoutButton" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md text-sm ml-4">Sair</button>
         </div>
-    </nav>
+    </header>
 
-    <div class="bg-blue-900 text-white p-2 flex justify-start items-center space-x-4 px-4">
-        <button class="bg-blue-700 px-4 py-2 rounded-md font-semibold">Casos de teste</button>
-        <button class="bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Área de trabalho</button>
-        <button class="bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Testes em execução</button>
+    <div class="bg-[#0D2B45] text-white p-2 flex justify-start items-center space-x-4 px-4 shadow-sm">
+        <button class="bg-[#154a70] px-4 py-2 rounded-md font-semibold">Casos de teste</button>
+        <button class="bg-transparent hover:bg-[#154a70] px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Área de trabalho</button>
+        <button class="bg-transparent hover:bg-[#154a70] px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Testes em execução</button>
     </div>
 
-    <div class="p-6">
+    <div class="p-6 flex-grow">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold">Funcionalidades</h2>
-            <button title="Nova Funcionalidade" onclick="UI.abrirModalCadastro()" class="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-md">
+            <button title="Nova Funcionalidade" onclick="UI.abrirModalCadastro()" class="bg-[#32C766] hover:bg-[#2dae5a] text-white font-bold p-2 rounded-md">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
@@ -59,60 +80,70 @@
 
         <h3 class="text-lg font-semibold mb-2">Lista de Casos de teste</h3>
 
-        <table class="w-full bg-white shadow-md rounded-md overflow-hidden">
-            <thead class="bg-blue-500 text-white">
-                <tr>
-                    <th class="p-3 text-center w-8">
-                        <input type="checkbox" id="selectAllCheckbox" class="form-checkbox h-4 w-4 text-blue-600">
-                    </th>
-                    <th class="p-3 text-left">Projeto</th>
-                    <th class="p-3 text-left">Funcionalidade</th>
-                    <th class="p-3 text-left">Prioridade</th>
-                    <th class="p-3 text-left">Relator</th>
-                    <th class="p-3 text-center">Ações</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-funcionalidades" class="divide-y divide-gray-200">
-            </tbody>
-        </table>
+        <div class="w-full bg-white shadow-md rounded-md overflow-hidden">
+            <table class="w-full border-collapse">
+                <thead class="bg-[#0D2B45] text-white">
+                    <tr>
+                        <th class="p-3 text-center w-8">
+                            <input type="checkbox" id="selectAllCheckbox" class="h-4 w-4 text-[#0D2B45]">
+                        </th>
+                        <th class="p-3 text-left">Projeto</th>
+                        <th class="p-3 text-left">Funcionalidade</th>
+                        <th class="p-3 text-left">Prioridade</th>
+                        <th class="p-3 text-left">Relator</th>
+                        <th class="p-3 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-funcionalidades" class="divide-y divide-gray-200">
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div id="actionsDropdown" class="bg-white border border-gray-200 rounded-md shadow-lg hidden">
     </div>
 
-    <div id="modal-cadastro" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center">
+    <div id="modal-cadastro" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center p-4">
         <div class="bg-white p-6 rounded-md shadow-lg w-full max-w-lg">
-            <h2 class="text-xl font-semibold mb-4">Nova Funcionalidade</h2>
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Nova Funcionalidade</h2>
             <form id="formFuncionalidade" class="space-y-4">
                 <input type="hidden" name="id">
                 <input type="hidden" name="imagem_existente">
                 <div>
-                    <input class="w-full p-2 border rounded-md" placeholder="Funcionalidade" name="nome" required>
+                    <label for="nome" class="block text-gray-700 text-sm font-bold mb-2">Funcionalidade:</label>
+                    <input id="nome" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" placeholder="Nome da funcionalidade" name="nome" required>
                 </div>
                 <div>
-                    <input class="w-full p-2 border rounded-md" placeholder="Relator" name="relator" id="relator" required>
+                    <label for="relator" class="block text-gray-700 text-sm font-bold mb-2">Relator:</label>
+                    <input id="relator" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" placeholder="Nome do relator" name="relator" required>
                 </div>
                 <div>
-                    <select class="w-full p-2 border rounded-md" name="prioridade" required>
+                    <label for="prioridade" class="block text-gray-700 text-sm font-bold mb-2">Prioridade:</label>
+                    <select id="prioridade" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" name="prioridade" required>
                         <option value="Alta">Alta</option>
                         <option value="Média">Média</option>
                         <option value="Baixa">Baixa</option>
                     </select>
                 </div>
                 <div>
-                    <textarea class="w-full p-2 border rounded-md" placeholder="Descrição" name="descricao"></textarea>
+                    <label for="descricao" class="block text-gray-700 text-sm font-bold mb-2">Descrição:</label>
+                    <textarea id="descricao" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" placeholder="Descrição detalhada" name="descricao" rows="3"></textarea>
                 </div>
                 <div>
                     <label for="imagem" class="block text-gray-700 text-sm font-bold mb-2">Anexo:</label>
                     <input type="file" class="w-full" name="imagem" id="imagem">
                 </div>
                 <div class="flex justify-end gap-2">
-                    <button type="button" onclick="UI.fecharModalCadastro()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md">Salvar</button>
+                    <button type="button" onclick="UI.fecharModalCadastro()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
+                    <button type="submit" class="bg-[#32C766] hover:bg-[#2dae5a] text-white font-bold py-2 px-4 rounded-md">Salvar</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <footer class="bg-gray-100 text-gray-600 text-center p-6 mt-auto border-t border-gray-200">
+        &copy; 2023 testcaseAI - Todos os direitos reservados.
+    </footer>
 
     <script>
         // Função para verificar a autenticação ao carregar a página
@@ -194,11 +225,11 @@
 
                     if (!imagemPreview) {
                         imagemPreview = document.createElement('div');
-                        imagemPreview.className = 'imagem-preview text-sm text-gray-500 mt-1';
+                        imagemPreview.className = 'imagem-preview';
                         // Insere o preview abaixo do input de arquivo
                         imagemInput.parentNode.insertBefore(imagemPreview, imagemInput.nextSibling);
                     }
-                    imagemPreview.innerHTML = `Arquivo atual: <strong>${nomeArquivo}</strong> <button type="button" class="text-red-500 hover:text-red-700 ml-2" onclick="UI.removerImagemExistente()">Remover</button>`;
+                    imagemPreview.innerHTML = `Arquivo atual: <strong>${nomeArquivo}</strong> <button type="button" onclick="UI.removerImagemExistente()">Remover</button>`;
                 } else {
                     // Limpa qualquer informação de imagem existente se não houver uma
                     if (imagemExistenteInput) {
@@ -312,7 +343,7 @@
                         const row = UI.tabela.insertRow();
                         row.innerHTML = `
                             <td class="p-3 text-center">
-                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 item-checkbox">
+                                <input type="checkbox" class="h-4 w-4 text-[#0D2B45] item-checkbox">
                             </td>
                             <td class="p-3">Projeto X</td>
                             <td class="p-3">${funcionalidade.nome}</td>

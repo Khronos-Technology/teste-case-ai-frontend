@@ -177,7 +177,7 @@
         </div>
         <form id="loginForm">
             <div class="form-group">
-                <input type="text" id="username" placeholder="Email" required>
+                <input type="text" id="identifier" placeholder="Email, CPF ou CNPJ" required>
             </div>
             <div class="form-group">
                 <input type="password" id="password" placeholder="Senha" required>
@@ -185,34 +185,38 @@
             <button type="submit" class="btn btn-primary">Sign in</button>
         </form>
         <p class="forgot-password"><a href="#">Forgot password?</a></p>
-        <p class="signup-link">Don't have an account? <a href="#">Sign up</a></p>
+        <p class="signup-link">Don't have an account? <a href="cadastro.html">Sign up</a></p>
         <div id="loginError" class="error-message"></div>
     </div>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Previne o envio padrão do formulário
 
-            const username = document.getElementById('username').value;
+            // Captura o valor do campo com id="identifier"
+            const identifier = document.getElementById('identifier').value; 
             const password = document.getElementById('password').value;
             const loginErrorDiv = document.getElementById('loginError');
-            loginErrorDiv.textContent = '';
+            loginErrorDiv.textContent = ''; // Limpa mensagens de erro anteriores
 
             try {
                 const response = await fetch("http://localhost:8000/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
+                    // Envia o JSON com a chave 'identifier'
+                    body: JSON.stringify({ identifier: identifier, password: password }) 
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Armazena o token no localStorage
+                    // Login bem-sucedido: Armazena o token e redireciona
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('token_type', data.token_type);
-                    window.location.href = "cadastro_funcionalidade.html";
+                    // Redireciona para a página de funcionalidades (ajuste o caminho se necessário)
+                    window.location.href = "cadastro_funcionalidade.html"; 
                 } else {
+                    // Login falhou: Exibe a mensagem de erro do backend
                     loginErrorDiv.textContent = data.detail || 'Erro no login. Verifique suas credenciais.';
                 }
             } catch (error) {
