@@ -1,79 +1,115 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Funcionalidades</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
+
         /* Seção de Estilos Customizados */
         .imagem-preview {
-            font-size: 0.875rem; /* Equivalente a text-sm no Tailwind */
-            color: #6b7280; /* Equivalente a text-gray-500 no Tailwind */
-            margin-top: 0.25rem; /* Equivalente a mt-1 no Tailwind */
-            display: flex; /* Adicionado para alinhar o texto e o botão */
-            align-items: center; /* Adicionado para alinhar o texto e o botão */
-            gap: 0.5rem; /* Espaçamento entre o texto e o botão */
+            font-size: 0.875rem;
+            /* Equivalente a text-sm no Tailwind */
+            color: #6b7280;
+            /* Equivalente a text-gray-500 no Tailwind */
+            margin-top: 0.25rem;
+            /* Equivalente a mt-1 no Tailwind */
+            display: flex;
+            /* Adicionado para alinhar o texto e o botão */
+            align-items: center;
+            /* Adicionado para alinhar o texto e o botão */
+            gap: 0.5rem;
+            /* Espaçamento entre o texto e o botão */
         }
+
         .imagem-preview strong {
-            font-weight: 600; /* font-semibold */
+            font-weight: 600;
+            /* font-semibold */
         }
+
         .imagem-preview button {
-            color: #DC2626; /* Cor de perigo para o botão de remover */
+            color: #DC2626;
+            /* Cor de perigo para o botão de remover */
             transition: color 0.2s ease;
             font-size: 0.875rem;
-            line-height: 1; /* Ajusta o alinhamento vertical do texto */
+            line-height: 1;
+            /* Ajusta o alinhamento vertical do texto */
         }
+
         .imagem-preview button:hover {
-            color: #B91C1C; /* Hover do botão de perigo */
+            color: #B91C1C;
+            /* Hover do botão de perigo */
         }
 
         /* Estilo para o dropdown de ações */
         #actionsDropdown {
             position: absolute;
-            z-index: 1000; /* Garante que o dropdown fique acima de outros elementos */
-            min-width: 150px; /* Adicione uma largura mínima para evitar que ele seja muito estreito */
-            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura */
+            z-index: 1000;
+            /* Garante que o dropdown fique acima de outros elementos */
+            min-width: 150px;
+            /* Adicione uma largura mínima para evitar que ele seja muito estreito */
+            box-sizing: border-box;
+            /* Garante que padding e border sejam incluídos na largura */
         }
     </style>
 </head>
+
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
 
     <header class="bg-[#0D2B45] text-white p-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-[#32C766] mr-2">
-                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="w-7 h-7 text-[#32C766] mr-2">
+                <path fill-rule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                    clip-rule="evenodd" />
             </svg>
             <span class="text-xl font-bold">testcaseAI</span>
         </div>
         <div class="flex items-center space-x-4">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 0 12 21.75c-2.676 0-5.216-.584-7.5-1.632Z" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 0 12 21.75c-2.676 0-5.216-.584-7.5-1.632Z" />
             </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.17.992c.07.4-.108.803-.472 1.068L15.7 7.5c-.347.24-.555.626-.54 1.03l.02.246c.01.29.157.564.407.743l1.192.857c.414.295.667.817.625 1.356l-.088 1.302c-.04.53-.466.96-.995 1.077l-.966.233c-.4.096-.75.32-.977.658L12 18.88c-.227.338-.577.562-.977.658l-.966-.233c-.529-.117-.955-.546-.995-1.076l-.088-1.302c-.042-.539.21-1.061.625-1.356l1.192-.857c.25-.179.397-.453.407-.743l.02-.246c.015-.403-.153-.789-.5-1.03l-2.07-1.5c-.364-.265-.542-.668-.472-1.068l.17-.992Zm.974 6.84a2 2 0 1 0 2.21-3.328 2 0 0 0-2.21 3.328Z" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.17.992c.07.4-.108.803-.472 1.068L15.7 7.5c-.347.24-.555.626-.54 1.03l.02.246c.01.29.157.564.407.743l1.192.857c.414.295.667.817.625 1.356l-.088 1.302c-.04.53-.466.96-.995 1.077l-.966.233c-.4.096-.75.32-.977.658L12 18.88c-.227.338-.577.562-.977.658l-.966-.233c-.529-.117-.955-.546-.995-1.076l-.088-1.302c-.042-.539.21-1.061.625-1.356l1.192-.857c.25-.179.397-.453.407-.743l.02-.246c.015-.403-.153-.789-.5-1.03l-2.07-1.5c-.364-.265-.542-.668-.472-1.068l.17-.992Zm.974 6.84a2 2 0 1 0 2.21-3.328 2 0 0 0-2.21 3.328Z" />
             </svg>
-            <button id="logoutButton" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md text-sm ml-4">Sair</button>
+            <button id="logoutButton"
+                class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md text-sm ml-4">Sair</button>
         </div>
     </header>
 
     <div class="bg-[#0D2B45] text-white p-2 flex justify-start items-center space-x-4 px-4 shadow-sm">
         <button class="bg-[#154a70] px-4 py-2 rounded-md font-semibold">Casos de teste</button>
-        <button class="bg-transparent hover:bg-[#154a70] px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Área de trabalho</button>
-        <button class="bg-transparent hover:bg-[#154a70] px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Testes em execução</button>
+        <button
+            class="bg-transparent hover:bg-[#154a70] px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Área
+            de trabalho</button>
+        <button
+            class="bg-transparent hover:bg-[#154a70] px-4 py-2 rounded-md font-medium text-gray-300 hover:text-white">Testes
+            em execução</button>
     </div>
 
     <div class="p-6 flex-grow">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold">Funcionalidades</h2>
-            <button title="Nova Funcionalidade" onclick="UI.abrirModalCadastro()" class="bg-[#32C766] hover:bg-[#2dae5a] text-white font-bold p-2 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            <button title="Nova Funcionalidade" onclick="UI.abrirModalCadastro()"
+                class="bg-[#32C766] hover:bg-[#2dae5a] text-white font-bold p-2 rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
             </button>
         </div>
@@ -111,15 +147,21 @@
                 <input type="hidden" name="imagem_existente">
                 <div>
                     <label for="nome" class="block text-gray-700 text-sm font-bold mb-2">Funcionalidade:</label>
-                    <input id="nome" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" placeholder="Nome da funcionalidade" name="nome" required>
+                    <input id="nome"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20"
+                        placeholder="Nome da funcionalidade" name="nome" required>
                 </div>
                 <div>
                     <label for="relator" class="block text-gray-700 text-sm font-bold mb-2">Relator:</label>
-                    <input id="relator" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" placeholder="Nome do relator" name="relator" required>
+                    <input id="relator"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20"
+                        placeholder="Nome do relator" name="relator" required>
                 </div>
                 <div>
                     <label for="prioridade" class="block text-gray-700 text-sm font-bold mb-2">Prioridade:</label>
-                    <select id="prioridade" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" name="prioridade" required>
+                    <select id="prioridade"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20"
+                        name="prioridade" required>
                         <option value="Alta">Alta</option>
                         <option value="Média">Média</option>
                         <option value="Baixa">Baixa</option>
@@ -127,15 +169,19 @@
                 </div>
                 <div>
                     <label for="descricao" class="block text-gray-700 text-sm font-bold mb-2">Descrição:</label>
-                    <textarea id="descricao" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20" placeholder="Descrição detalhada" name="descricao" rows="3"></textarea>
+                    <textarea id="descricao"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#0D2B45] focus:ring-2 focus:ring-[#0D2B45]/20"
+                        placeholder="Descrição detalhada" name="descricao" rows="3"></textarea>
                 </div>
                 <div>
                     <label for="imagem" class="block text-gray-700 text-sm font-bold mb-2">Anexo:</label>
                     <input type="file" class="w-full" name="imagem" id="imagem">
                 </div>
                 <div class="flex justify-end gap-2">
-                    <button type="button" onclick="UI.fecharModalCadastro()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
-                    <button type="submit" class="bg-[#32C766] hover:bg-[#2dae5a] text-white font-bold py-2 px-4 rounded-md">Salvar</button>
+                    <button type="button" onclick="UI.fecharModalCadastro()"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
+                    <button type="submit"
+                        class="bg-[#32C766] hover:bg-[#2dae5a] text-white font-bold py-2 px-4 rounded-md">Salvar</button>
                 </div>
             </form>
         </div>
@@ -158,7 +204,7 @@
         }
 
         // Adiciona um listener para o botão de sair
-        document.getElementById('logoutButton').addEventListener('click', function() {
+        document.getElementById('logoutButton').addEventListener('click', function () {
             localStorage.removeItem('access_token');
             localStorage.removeItem('token_type');
             window.location.href = 'index.html';
@@ -177,7 +223,7 @@
             selectAllCheckbox: document.getElementById('selectAllCheckbox'),
 
             // Métodos para controle de modais e dropdowns
-            abrirModalCadastro: function() {
+            abrirModalCadastro: function () {
                 this.modalTitle.textContent = 'Nova Funcionalidade';
                 this.salvarButton.textContent = 'Salvar';
                 this.formFuncionalidade.reset();
@@ -193,11 +239,11 @@
                 this.modalCadastro.classList.remove('hidden');
             },
 
-            fecharModalCadastro: function() {
+            fecharModalCadastro: function () {
                 this.modalCadastro.classList.add('hidden');
             },
 
-            abrirModalEdicao: function(funcionalidade) {
+            abrirModalEdicao: function (funcionalidade) {
                 this.modalTitle.textContent = 'Editar Funcionalidade';
                 this.salvarButton.textContent = 'Atualizar';
                 this.formFuncionalidade.reset();
@@ -245,7 +291,7 @@
                 this.modalCadastro.classList.remove('hidden');
             },
 
-            removerImagemExistente: function() {
+            removerImagemExistente: function () {
                 const imagemExistenteInput = this.formFuncionalidade.querySelector('[name="imagem_existente"]');
                 if (imagemExistenteInput) {
                     imagemExistenteInput.value = ''; // Define o valor como vazio para indicar remoção
@@ -258,7 +304,7 @@
             },
 
             // Função para alternar o dropdown de ações
-            toggleActionsDropdown: function(event, funcionalidadeId, nomeFuncionalidade) {
+            toggleActionsDropdown: function (event, funcionalidadeId, nomeFuncionalidade) {
                 const button = event.currentTarget;
                 if (this.currentActionButton === button && !this.actionsDropdown.classList.contains('hidden')) {
                     this.actionsDropdown.classList.add('hidden');
@@ -293,7 +339,7 @@
                 this.actionsDropdown.classList.remove('hidden');
             },
 
-            fecharActionsDropdown: function() {
+            fecharActionsDropdown: function () {
                 this.actionsDropdown.classList.add('hidden');
                 this.currentActionButton = null;
             }
@@ -304,21 +350,20 @@
             API_BASE_URL: "http://localhost:8000", // Certifique-se de que esta URL está correta
 
             // Função para obter os headers de autenticação
-            getAuthHeaders: function() {
+            getAuthHeaders: function () {
                 const token = localStorage.getItem('access_token');
                 const tokenType = localStorage.getItem('token_type');
                 if (token && tokenType) {
                     return {
-                        'Authorization': `${tokenType} ${token}`,
-                        'Content-Type': 'application/json' // Default para JSON, pode ser sobrescrito
+                        'Authorization': `${tokenType} ${token}`
                     };
                 }
-                // Redireciona para o login se não houver token, o que já é feito em checkAuthentication()
                 window.location.href = 'index.html';
                 throw new Error("Token de autenticação não encontrado. Redirecionando para o login.");
             },
 
-            listarFuncionalidades: async function() {
+
+            listarFuncionalidades: async function () {
                 try {
                     const headers = this.getAuthHeaders();
                     delete headers['Content-Type']; // GET request, não precisa de Content-Type
@@ -365,36 +410,25 @@
                 }
             },
 
-            salvarFuncionalidade: async function(event) {
+            salvarFuncionalidade: async function (event) {
                 event.preventDefault();
                 const form = event.target;
                 const formData = new FormData(form);
                 const funcionalidadeId = form.querySelector('[name="id"]').value;
 
-                // --- Correção Principal AQUI ---
+                // Lógica para manipulação de imagem (mantida)
                 const imagemInput = form.querySelector('[name="imagem"]');
                 const imagemExistenteInput = form.querySelector('[name="imagem_existente"]');
-
-                // Se o usuário NÃO selecionou uma nova imagem (input de arquivo está vazio)
-                // E existe um valor no campo hidden 'imagem_existente' (ou seja, havia uma imagem antes)
                 if (imagemInput.files.length === 0 && imagemExistenteInput && imagemExistenteInput.value) {
-                    // Adiciona o nome da imagem existente ao formData
-                    // O backend precisará de um campo para saber que a imagem existente deve ser mantida.
                     formData.append('imagem_mantida', imagemExistenteInput.value);
-                    // Remove o campo 'imagem' do FormData para não enviar um campo de arquivo vazio
                     formData.delete('imagem');
                 } else if (imagemInput.files.length > 0) {
-                    // Se uma nova imagem foi selecionada, o FormData já a incluirá.
-                    // Garante que o campo 'imagem_mantida' não seja enviado se uma nova imagem for enviada.
                     formData.delete('imagem_mantida');
                 } else {
-                    // Se não há nova imagem e o campo 'imagem_existente' está vazio (o usuário removeu ou nunca teve)
-                    // Isso indica ao backend para remover a imagem.
                     formData.append('remover_imagem', 'true');
-                    formData.delete('imagem'); // Garante que nenhum campo vazio seja enviado
+                    formData.delete('imagem');
                     formData.delete('imagem_mantida');
                 }
-                // --- Fim da correção ---
 
                 let method = 'POST';
                 let url = `${this.API_BASE_URL}/funcionalidades`;
@@ -403,19 +437,19 @@
                     url = `${this.API_BASE_URL}/funcionalidades/${funcionalidadeId}`;
                 }
 
-                const headers = {
-                    'Authorization': `${localStorage.getItem('token_type')} ${localStorage.getItem('access_token')}`
-                };
+                const headers = this.getAuthHeaders(); // Chama a função para obter os headers
 
-                // REMOVE o 'Content-Type' para requisições com FormData
-                // O navegador define automaticamente o 'multipart/form-data'
-                delete headers['Content-Type'];
+                // Para FormData, o Content-Type é definido automaticamente como multipart/form-data.
+                // Se getAuthHeaders() não adicionar Content-Type, não precisamos deletar aqui.
+                // Se precisar, descomente:
+                // delete headers['Content-Type'];
+
 
                 try {
                     const response = await fetch(url, {
                         method: method,
-                        headers: headers,
-                        body: formData
+                        headers: headers, // Apenas os headers de autorização
+                        body: formData // O FormData que inclui os arquivos
                     });
 
                     if (!response.ok) {
@@ -437,14 +471,13 @@
                     alert("Erro ao salvar funcionalidade: " + error.message);
                 }
             },
-
             // ALTERADO: Agora redireciona para a nova tela de detalhes
-            carregarDetalhesFuncionalidade: async function(id) {
+            carregarDetalhesFuncionalidade: async function (id) {
                 // Redireciona para a nova página de detalhes, passando o ID na URL
                 window.location.href = `detalhe_funcionalidade.html?id=${id}`;
             },
 
-            carregarParaEdicao: async function(id) {
+            carregarParaEdicao: async function (id) {
                 try {
                     const headers = this.getAuthHeaders();
                     delete headers['Content-Type']; // GET request, não precisa de Content-Type
@@ -474,7 +507,7 @@
                 }
             },
 
-            deletarFuncionalidade: async function(id, nomeFuncionalidade) {
+            deletarFuncionalidade: async function (id, nomeFuncionalidade) {
                 if (!confirm(`Tem certeza que deseja deletar a funcionalidade "${nomeFuncionalidade}"?`)) {
                     return;
                 }
@@ -508,10 +541,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (checkAuthentication()) {
                 APIs.listarFuncionalidades();
-                UI.formFuncionalidade.addEventListener('submit', APIs.salvarFuncionalidade);
+                UI.formFuncionalidade.addEventListener('submit', function (event) {
+                    APIs.salvarFuncionalidade.call(APIs, event); // Chama salvarFuncionalidade com o contexto de APIs
+                });
 
                 // Fechar dropdown de ações ao clicar fora
-                document.addEventListener('click', function(event) {
+                document.addEventListener('click', function (event) {
                     if (UI.currentActionButton && !UI.currentActionButton.contains(event.target) && !UI.actionsDropdown.contains(event.target)) {
                         UI.fecharActionsDropdown();
                     }
@@ -520,7 +555,7 @@
         });
 
         // Lógica do checkbox "Selecionar Todos"
-        UI.selectAllCheckbox.addEventListener('change', function() {
+        UI.selectAllCheckbox.addEventListener('change', function () {
             const checkboxes = document.querySelectorAll('.item-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = this.checked;
@@ -528,4 +563,5 @@
         });
     </script>
 </body>
+
 </html>
