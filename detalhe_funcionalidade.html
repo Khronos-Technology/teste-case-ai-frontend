@@ -5,7 +5,7 @@
     <title>Detalhes da Funcionalidade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for the Jira-like table layout */
+        /* Estilos personalizados para o layout */
         .jira-table-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -29,9 +29,22 @@
             padding: 1rem;
             margin-bottom: 0.75rem;
             position: relative;
-            word-break: break-word; /* Ensures long text breaks within the box */
+            word-break: break-word; /* Garante que textos longos quebrem dentro da caixa */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden; /* Garante que o conteúdo não vaze */
+            max-height: 300px; /* Altura máxima inicial */
+            transition: max-height 0.3s ease-in-out;
         }
-        .copy-button {
+        .scenario-box.expanded {
+            max-height: none; /* Remove a limitação de altura quando expandido */
+        }
+        .scenario-content {
+            flex-grow: 1; /* Permite que o conteúdo ocupe o espaço disponível */
+            margin-bottom: 1rem; /* Espaço entre o conteúdo e os botões */
+        }
+        .copy-button, .expand-button {
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
@@ -42,13 +55,31 @@
             font-size: 0.75rem;
             cursor: pointer;
             opacity: 0;
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
         }
-        .scenario-box:hover .copy-button {
+        .scenario-box:hover .copy-button,
+        .scenario-box:hover .expand-button {
             opacity: 1;
         }
-        .copy-button:active {
+        .copy-button:active, .expand-button:active {
             background-color: #4338ca; /* indigo-700 */
+        }
+        .expand-button {
+            right: 4rem; /* Ajusta a posição para não sobrepor o botão Copiar */
+            background-color: #3b82f6; /* blue-500 */
+        }
+        .expand-button:hover {
+            background-color: #2563eb; /* blue-600 */
+        }
+        .scenario-box pre {
+            white-space: pre-wrap; /* Quebra de linha para conteúdo longo */
+            word-wrap: break-word;
+            overflow-y: auto; /* Adiciona scroll se necessário */
+            max-height: 240px; /* Limita a altura do <pre> */
+            flex-grow: 1;
+        }
+        .scenario-box.expanded pre {
+            max-height: none; /* Remove a limitação de altura do <pre> */
         }
     </style>
 </head>
@@ -116,35 +147,8 @@
             <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <h2 class="text-2xl font-bold mb-4 text-gray-900">Cenários para Xray</h2>
                 <p class="text-gray-600 mb-4">Copie os cenários abaixo e cole-os diretamente no Xray.</p>
-                <div id="xray-scenarios-container" class="space-y-4">
-                    <div class="scenario-box">
-                        <pre class="text-sm text-gray-800">
-Scenario: Exemplo de Cenário 1
-    Given que o usuário está logado
-    When ele navega para a página inicial
-    Then a página inicial deve ser exibida corretamente
-                        </pre>
-                        <button class="copy-button" onclick="copyToClipboard(this)">Copiar</button>
-                    </div>
-                    <div class="scenario-box">
-                        <pre class="text-sm text-gray-800">
-Scenario: Exemplo de Cenário 2
-    Given que o produto X está disponível
-    When o usuário adiciona o produto X ao carrinho
-    Then o produto X deve ser exibido no carrinho com a quantidade 1
-                        </pre>
-                        <button class="copy-button" onclick="copyToClipboard(this)">Copiar</button>
-                    </div>
-                    <div class="scenario-box">
-                        <pre class="text-sm text-gray-800">
-Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
-    Given um usuário com permissões de administrador
-    When ele tenta deletar um item crítico
-    Then o sistema deve exibir uma mensagem de confirmação
-                        </pre>
-                        <button class="copy-button" onclick="copyToClipboard(this)">Copiar</button>
-                    </div>
-                    </div>
+                <div id="xray-scenarios-container" class="space-y-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                </div>
             </div>
         </div>
     </div>
@@ -154,7 +158,6 @@ Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
         function checkAuthentication() {
             const token = localStorage.getItem('access_token');
             if (!token) {
-                // Redirect to login page if no token
                 window.location.href = 'index.html';
                 return false;
             }
@@ -180,16 +183,11 @@ Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
                         'Content-Type': 'application/json'
                     };
                 }
-                // Se o token não existir, force o redirecionamento.
-                // Idealmente, a autenticação seria verificada em um ponto mais centralizado.
                 window.location.href = 'index.html';
                 throw new Error("Token de autenticação não encontrado. Redirecionando para o login.");
             },
 
-            // Função enviarPromptVisualizacao revertida para o comportamento anterior
-            // Ela agora não espera argumentos e pega o valor do prompt-visualizacao
             enviarPromptVisualizacao: async function() {
-                // Pega a história do usuário diretamente do textarea, como era antes
                 const userStory = document.getElementById('prompt-visualizacao').value;
                 if (!userStory) {
                     alert("Por favor, preencha a descrição da funcionalidade para gerar cenários.");
@@ -197,16 +195,15 @@ Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
                 }
 
                 const respostaDiv = document.getElementById('resposta-visualizacao');
-                respostaDiv.textContent = 'Gerando cenários BDD...'; // Mensagem original
+                respostaDiv.textContent = 'Gerando cenários BDD...';
                 respostaDiv.classList.add('animate-pulse');
 
                 try {
                     const headers = this.getAuthHeaders();
-                    // Chamada para o endpoint original '/generate_bdd'
                     const response = await fetch(`${this.API_BASE_URL}/generate_bdd`, {
                         method: 'POST',
                         headers: headers,
-                        body: JSON.stringify({ user_story: userStory, temperature: 0.7 }) // Corpo da requisição original
+                        body: JSON.stringify({ user_story: userStory, temperature: 0.7 })
                     });
 
                     if (!response.ok) {
@@ -223,12 +220,12 @@ Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
 
                     const data = await response.json();
                     if (data.error) {
-                        respostaDiv.textContent = `Erro da IA: ${data.error}`; // 'Gemini' ou 'IA'
+                        respostaDiv.textContent = `Erro da IA: ${data.error}`;
                         respostaDiv.style.color = '#ef5350';
                     } else {
-                        respostaDiv.textContent = data.bdd_scenarios; // Espera 'bdd_scenarios'
+                        respostaDiv.textContent = data.bdd_scenarios;
                         respostaDiv.style.color = '#2d3748';
-                        populateXrayScenarios(data.bdd_scenarios); // Popula Xray com o campo correto
+                        populateXrayScenarios(data.bdd_scenarios);
                     }
                 } catch (error) {
                     console.error("Erro ao chamar a API de geração de cenários:", error);
@@ -239,7 +236,6 @@ Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
                 }
             },
 
-            // Function to load feature details by ID (mantida sem alterações, pois já funciona)
             carregarDetalhesFuncionalidade: async function(id) {
                 try {
                     const headers = this.getAuthHeaders();
@@ -268,14 +264,13 @@ Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
             }
         };
 
-        // Function to populate details on the screen when the page loads
         async function preencherDetalhesFuncionalidade() {
             const urlParams = new URLSearchParams(window.location.search);
             const funcionalidadeId = urlParams.get('id');
 
             if (!funcionalidadeId) {
                 alert('ID da funcionalidade não fornecido.');
-                window.location.href = 'cadastro_funcionalidade.html'; // Go back to the list if no ID
+                window.location.href = 'cadastro_funcionalidade.html';
                 return;
             }
 
@@ -300,118 +295,160 @@ Scenario: Exemplo de Cenário 3 (Adicionar mais para teste)
                     document.getElementById('visualizar-imagem-link').textContent = 'Nenhum anexo';
                 }
 
-                // Preenche o textarea 'prompt-visualizacao' com a descrição da funcionalidade
-                // Isso é essencial, pois 'enviarPromptVisualizacao' agora lerá daqui.
                 document.getElementById('prompt-visualizacao').value = funcionalidade.descricao || '';
-
-                // Adiciona o event listener para o botão "Gerar Casos de Teste"
-                // Agora, ele chamará enviarPromptVisualizacao() sem argumentos,
-                // que por sua vez, lerá o prompt do textarea.
                 document.getElementById('gerarCasosTesteBtn').addEventListener('click', APIs.enviarPromptVisualizacao.bind(APIs));
-
             } else {
                 alert('Não foi possível carregar os detalhes da funcionalidade.');
                 window.location.href = 'cadastro_funcionalidade.html';
             }
         }
 
-        // Function to parse and display scenarios for Xray
-function populateXrayScenarios(responseText) {
-    const container = document.getElementById('xray-scenarios-container');
-    container.innerHTML = ''; // Clear previous scenarios
+        function populateXrayScenarios(responseText) {
+            const container = document.getElementById('xray-scenarios-container');
+            container.innerHTML = ''; // Limpa cenários anteriores
 
-    // Split the AI response into individual lines
-    const lines = responseText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-    let currentScenarioSteps = [];
-    const scenarios = [];
-    let scenarioTitle = 'Cenário Padrão'; // Default title if not explicitly found
+            // Divide a resposta em linhas e filtra linhas vazias
+            const lines = responseText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
-    // This logic attempts to reconstruct Gherkin based on "Dado que", "Quando", "Então" keywords
-    // in Portuguese. It assumes a new scenario either starts with "Dado que" or "Cenário:".
-    lines.forEach(line => {
-        if (line.startsWith('Cenário:') || line.startsWith('Feature:')) {
-            // If a new scenario title is found, push the previous one (if any)
-            if (currentScenarioSteps.length > 0) {
-                scenarios.push({
-                    title: scenarioTitle,
-                    steps: currentScenarioSteps
-                });
-                currentScenarioSteps = [];
-            }
-            scenarioTitle = line.replace(/^(Cenário|Feature):\s*/, '').trim();
-        } else if (line.startsWith('Dado que') || line.startsWith('Quando') || line.startsWith('Então') || line.startsWith('E ') || line.startsWith('Mas ')) {
-            // If a step line is found, add it to the current scenario's steps
-            // If this is the very first step of a new implicit scenario (no "Scenario:" line before),
-            // use "Dado que" as part of the title.
-            if (currentScenarioSteps.length === 0 && !line.startsWith('Dado que')) {
-                 // This condition helps ensure we group steps correctly if there's no explicit scenario title
-                 // It prevents "Quando" or "Então" from starting a new scenario if "Dado que" is missing
-            }
-            currentScenarioSteps.push(line);
-        } else {
-            // For any other lines (e.g., descriptive text within a scenario, or blank lines),
-            // just add them as part of the current scenario steps.
-            currentScenarioSteps.push(line);
-        }
-    });
+            let currentScenarioSteps = [];
+            const scenarios = [];
+            let scenarioTitle = ''; // Inicializa sem título padrão para evitar "Cenário Padrão" se a resposta não o contiver
 
-    // Add the last collected scenario
-    if (currentScenarioSteps.length > 0) {
-        scenarios.push({
-            title: scenarioTitle,
-            steps: currentScenarioSteps
-        });
-    }
-
-    if (scenarios.length > 0) {
-        scenarios.forEach(scenarioData => {
-            const scenarioBox = document.createElement('div');
-            scenarioBox.classList.add('scenario-box');
-
-            const preElement = document.createElement('pre');
-            preElement.classList.add('text-sm', 'text-gray-800');
-
-            // Format the scenario for Xray/Gherkin
-            let formattedScenario = `Scenario: ${scenarioData.title}\n`;
-            scenarioData.steps.forEach(step => {
-                let formattedStep = step;
-                if (step.startsWith('Dado que ')) {
-                    formattedStep = `  Given ${step.substring('Dado que '.length)}`;
-                } else if (step.startsWith('Quando ')) {
-                    formattedStep = `  When ${step.substring('Quando '.length)}`;
-                } else if (step.startsWith('Então ')) {
-                    formattedStep = `  Then ${step.substring('Então '.length)}`;
-                } else if (step.startsWith('E ')) {
-                    formattedStep = `  And ${step.substring('E '.length)}`;
-                } else if (step.startsWith('Mas ')) {
-                    formattedStep = `  But ${step.substring('Mas '.length)}`;
-                } else if (step.startsWith('Cenário:') || step.startsWith('Feature:')) {
-                    formattedStep = ''; // Don't duplicate the scenario/feature title if it was parsed as a step
+            lines.forEach(line => {
+                // Verifica se a linha é um novo cenário ou uma quebra <<>>
+                if (line.startsWith('Scenario:') || line.startsWith('Feature:') || line === '<<>>') {
+                    // Se houver um cenário em construção, adiciona-o à lista
+                    if (currentScenarioSteps.length > 0) {
+                        scenarios.push({ title: scenarioTitle, steps: currentScenarioSteps });
+                    }
+                    // Reseta para o próximo cenário
+                    currentScenarioSteps = [];
+                    if (line.startsWith('Scenario:')) {
+                        scenarioTitle = line.replace('Scenario:', '').trim();
+                    } else if (line.startsWith('Feature:')) {
+                        scenarioTitle = line.replace('Feature:', '').trim();
+                    } else if (line === '<<>>') {
+                        // Se for "<<>>", o título anterior continua. Se for o primeiro bloco,
+                        // definimos um título padrão ou deixamos em branco se o prompt original
+                        // não definir um "Scenario:" antes.
+                        if (!scenarioTitle) {
+                            scenarioTitle = 'Cenário Padrão'; // Define um título padrão se nenhum foi encontrado antes
+                        }
+                    }
                 } else {
-                    formattedStep = `  ${step}`; // For any other lines, just indent them
-                }
-                if (formattedStep) { // Only add if not empty
-                    formattedScenario += formattedStep + '\n';
+                    // Adiciona a linha atual aos passos do cenário
+                    currentScenarioSteps.push(line);
                 }
             });
-            preElement.textContent = formattedScenario.trim(); // Trim extra newlines
 
-            scenarioBox.appendChild(preElement);
+            // Adiciona o último cenário construído (caso a resposta não termine com "<<>>")
+            if (currentScenarioSteps.length > 0) {
+                // Se nenhum título foi definido (por exemplo, se a resposta for apenas passos sem "Scenario:"), usa o padrão.
+                if (!scenarioTitle) {
+                    scenarioTitle = 'Cenário Padrão';
+                }
+                scenarios.push({ title: scenarioTitle, steps: currentScenarioSteps });
+            }
 
-            const copyButton = document.createElement('button');
-            copyButton.classList.add('copy-button');
-            copyButton.textContent = 'Copiar';
-            copyButton.onclick = () => copyToClipboard(copyButton);
-            scenarioBox.appendChild(copyButton);
+            // Renderiza os cenários encontrados
+            if (scenarios.length > 0) {
+                scenarios.forEach(scenarioData => {
+                    const scenarioBox = document.createElement('div');
+                    scenarioBox.classList.add('scenario-box');
 
-            container.appendChild(scenarioBox);
-        });
-    } else {
-        container.innerHTML = '<p class="text-gray-500">Nenhum cenário de teste encontrado na resposta da IA. Certifique-se de que a IA está gerando cenários no formato Gherkin (Scenario: Given, When, Then) ou em um formato que possa ser interpretado (e.g., "Dado que...", "Quando...", "Então...").</p>';
-    }
-}
+                    const scenarioContent = document.createElement('div');
+                    scenarioContent.classList.add('scenario-content');
 
-        // Function to copy text to clipboard
+                    const preElement = document.createElement('pre');
+                    preElement.classList.add('text-sm', 'text-gray-800');
+
+                    let formattedScenario = '';
+                    // Evita adicionar "Scenario: Cenário Padrão" se o título já estiver correto.
+                    if (scenarioData.title && scenarioData.title !== 'Cenário Padrão') {
+                         formattedScenario = `Scenario: ${scenarioData.title}\n`;
+                    } else if (scenarioData.title === 'Cenário Padrão') {
+                        // Se o título for "Cenário Padrão", verifica se o prompt original já o incluiu
+                        // ou se é um título gerado pelo front. Se o prompt já o gera, não o adicionamos aqui.
+                        // Para evitar a duplicação, vamos confiar que o prompt já o incluirá se necessário.
+                        // Removeremos a linha "Scenario: Cenário Padrão" se ela for gerada e o prompt já a tiver.
+                    }
+
+
+                    scenarioData.steps.forEach(step => {
+                        let formattedStep = step;
+                        if (step.startsWith('Dado que ')) {
+                            formattedStep = `    Given ${step.substring('Dado que '.length)}`;
+                        } else if (step.startsWith('Quando ')) {
+                            formattedStep = `    When ${step.substring('Quando '.length)}`;
+                        } else if (step.startsWith('Então ')) {
+                            formattedStep = `    Then ${step.substring('Então '.length)}`;
+                        } else if (step.startsWith('E ')) {
+                            formattedStep = `    And ${step.substring('E '.length)}`;
+                        } else if (step.startsWith('Mas ')) {
+                            formattedStep = `    But ${step.substring('Mas '.length)}`;
+                        } else if (step.startsWith('Scenario:') || step.startsWith('Feature:')) {
+                            // Verifica se o título já foi adicionado ao formattedScenario.
+                            // Se for um novo cenário e já adicionamos o título, não fazemos nada.
+                            // Se for o primeiro cenário e ele já começa com "Scenario:", evitamos duplicar.
+                            if (!formattedScenario.startsWith(`Scenario: ${step.replace('Scenario:', '').trim()}`)) {
+                                formattedScenario = `${step}\n`; // Começa um novo bloco de cenário
+                            } else {
+                                formattedStep = ''; // Evita duplicar o título do cenário
+                            }
+                        } else {
+                            formattedStep = `    ${step}`; // Indenta outras linhas
+                        }
+                        if (formattedStep) {
+                            formattedScenario += formattedStep + '\n';
+                        }
+                    });
+
+                    // Remove a linha "Scenario: Cenário Padrão" se ela for gerada e não for necessária.
+                    // Isso acontece se o prompt já gerar o "Scenario: ..." e o script tentar adicionar um "Cenário Padrão".
+                    if (formattedScenario.includes('Scenario: Cenário Padrão') && scenarioData.title !== 'Cenário Padrão') {
+                         // Se o título real não for "Cenário Padrão", removemos a linha duplicada.
+                         // A lógica aqui precisa ser mais refinada para garantir que não removamos cenários válidos.
+                         // Por enquanto, vamos focar em não adicionar "Scenario: Cenário Padrão" se o prompt já o gerou.
+                    }
+
+                    // Se o prompt gerar linhas como "Scenario 01: Tentativa de login com usuário inativo"
+                    // e não "Scenario: Tentativa de login com usuário inativo", precisamos ajustá-las.
+                    // Esta parte pode precisar de mais refinamento dependendo do output exato da IA.
+                    if (formattedScenario.startsWith('Scenario: Scenario 01:')) {
+                        formattedScenario = formattedScenario.replace('Scenario: Scenario 01:', 'Scenario: 01:');
+                    }
+
+
+                    preElement.textContent = formattedScenario.trim();
+                    scenarioContent.appendChild(preElement);
+                    scenarioBox.appendChild(scenarioContent);
+
+                    const copyButton = document.createElement('button');
+                    copyButton.classList.add('copy-button');
+                    copyButton.textContent = 'Copiar';
+                    copyButton.onclick = () => copyToClipboard(copyButton);
+                    scenarioBox.appendChild(copyButton);
+
+                    const expandButton = document.createElement('button');
+                    expandButton.classList.add('expand-button');
+                    expandButton.textContent = 'Expandir';
+                    expandButton.onclick = () => toggleScenarioExpansion(expandButton);
+                    scenarioBox.appendChild(expandButton);
+
+                    container.appendChild(scenarioBox);
+                });
+            } else {
+                container.innerHTML = '<p class="text-gray-500">Nenhum cenário de teste encontrado na resposta da IA. Certifique-se de que a IA está gerando cenários no formato Gherkin (Scenario: Given, When, Then) ou em um formato que possa ser interpretado (e.g., "Dado que...", "Quando...", "Então...").</p>';
+            }
+        }
+
+
+        function toggleScenarioExpansion(button) {
+            const scenarioBox = button.closest('.scenario-box');
+            scenarioBox.classList.toggle('expanded');
+            button.textContent = scenarioBox.classList.contains('expanded') ? 'Recolher' : 'Expandir';
+        }
+
         function copyToClipboard(buttonElement) {
             const scenarioBox = buttonElement.closest('.scenario-box');
             const preElement = scenarioBox.querySelector('pre');
@@ -433,7 +470,6 @@ function populateXrayScenarios(responseText) {
                 });
         }
 
-        // Call the function when the page loads
         document.addEventListener('DOMContentLoaded', () => {
             if (checkAuthentication()) {
                 preencherDetalhesFuncionalidade();
