@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - testcaseAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Cores e estilos para fundo branco e footer, inspirados nos designs fornecidos */
+        :root {
+            --primary-color: #0D2B45; /* Azul escuro do cabeçalho */
+            --text-color-primary: #333; /* Cor de texto principal para o corpo */
+            --bg-color-primary: #F4F6F9; /* Fundo principal (levemente cinza, como na imagem inicial) */
+            --container-bg-color: #fff; /* Fundo do container de cadastro branco */
+            --input-bg-color: #f9f9f9; /* Fundo dos inputs cinza claro */
+            --input-border-color: #CCC; /* Borda dos inputs */
+            --input-focus-border-color: #0D2B45; /* Borda foco dos inputs */
+            --button-bg-color: #0D2B45; /* Cor do botão principal */
+            --button-hover-bg-color: #154a70; /* Hover do botão principal */
+            --link-color: #32C766; /* Cor dos links */
+            --footer-bg-color: #F4F6F9; /* Fundo do footer */
+            --footer-text-color: #777; /* Texto do footer */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-primary);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Para que o footer fique no final */
+            min-height: 100vh; /* Ocupa a altura total da viewport */
+            color: var(--text-color-primary);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra leve no cabeçalho */
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .signup-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: var(--container-bg-color);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Sombra mais sutil */
+            flex-grow: 1; /* Permite que o container cresça e empurre o footer */
+        }
+
+        .signup-container h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .user-type {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Espaço entre os radio buttons */
+        }
+
+        .user-type label {
+            display: flex;
+            align-items: center;
+            margin: 0; /* Remove a margin padrão para usar gap */
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .user-type input[type="radio"] {
+            margin-right: 8px; /* Espaço entre o radio e o texto */
+            /* Estilos para customizar o radio button */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--input-border-color);
+            border-radius: 50%;
+            outline: none;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            display: inline-block; /* Garante que o pseudo-elemento funcione */
+            position: relative; /* Para posicionar o ponto interno */
+        }
+
+        .user-type input[type="radio"]:checked {
+            border-color: var(--button-bg-color);
+            background-color: var(--button-bg-color);
+        }
+
+        .user-type input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background-color: white; /* Cor do ponto interno */
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        input[type="text"],
+        input[type="email"], /* Adicionado type="email" */
+        input[type="tel"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: var(--input-bg-color);
+            color: var(--text-color-primary);
+            box-sizing: border-box; /* Garante que padding e border não aumentem a largura */
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus, /* Adicionado type="email" */
+        input[type="tel"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--input-focus-border-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(13, 43, 69, 0.2); /* Sombra mais suave no foco */
+        }
+
+        .signup-container button {
+            width: 100%;
+            background-color: var(--button-bg-color);
+            color: white;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .signup-container button:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        .login-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 600; /* Deixa o link mais proeminente */
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            background-color: var(--footer-bg-color);
+            color: var(--footer-text-color);
+            text-align: center;
+            padding: 1.5rem 0; /* Padding maior para o footer */
+            font-size: 0.85rem;
+            border-top: 1px solid #e0e0e0; /* Borda superior sutil */
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 600px) {
+            header {
+                padding: 1rem 1rem;
+            }
+
+            .signup-container {
+                margin: 2rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .signup-container h2 {
+                font-size: 1.3rem;
+            }
+
+            .user-type {
+                flex-direction: column; /* Empilha os radio buttons em telas pequenas */
+                gap: 10px;
+            }
+        }
+    </style>
+    <script>
+        function toggleFields(tipo) {
+            const pfFields = document.querySelectorAll('.pf-group');
+            const pjFields = document.querySelectorAll('.pj-group');
+            
+            const pfInputs = document.querySelectorAll('.pf-group input');
+            const pjInputs = document.querySelectorAll('.pj-group input');
+
+            // Hide all fields and remove 'required' attribute initially
+            pfFields.forEach(el => el.classList.add('hidden'));
+            pjFields.forEach(el => el.classList.add('hidden'));
+            pfInputs.forEach(el => el.removeAttribute('required'));
+            pjInputs.forEach(el => el.removeAttribute('required'));
+
+            // Show correct fields and add 'required' attribute
+            if (tipo === 'pf') {
+                pfFields.forEach(el => el.classList.remove('hidden'));
+                document.getElementById('full_name').setAttribute('required', 'required');
+                document.getElementById('cpf').setAttribute('required', 'required');
+            } else { // tipo === 'pj'
+                pjFields.forEach(el => el.classList.remove('hidden'));
+                document.getElementById('corporate_name').setAttribute('required', 'required');
+                document.getElementById('cnpj').setAttribute('required', 'required');
+                document.getElementById('legal_representative').setAttribute('required', 'required');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('input[name="tipo"][value="pf"]').checked = true;
+            toggleFields('pf'); 
+
+            document.querySelectorAll('input[name="tipo"]').forEach(el => {
+                el.addEventListener('change', () => toggleFields(el.value));
+            });
+
+            // --- CÓDIGO PARA ENVIAR O FORMULÁRIO PARA A API ---
+            const signupForm = document.querySelector('form');
+
+            signupForm.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevents default form submission
+
+                const userType = document.querySelector('input[name="tipo"]:checked').value;
+                const email = document.getElementById('email').value; // <-- PEGA O VALOR DO EMAIL AQUI
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+
+                if (password !== confirmPassword) {
+                    alert('As senhas não coincidem!');
+                    return;
+                }
+
+                let userData = {
+                    email: email, // <-- ADICIONA O EMAIL AO OBJETO userData
+                    password: password,
+                    user_type: userType
+                };
+
+                if (userType === 'pf') {
+                    userData.cpf = document.getElementById('cpf').value;
+                    userData.full_name = document.getElementById('full_name').value;
+                } else { // userType === 'pj'
+                    userData.cnpj = document.getElementById('cnpj').value;
+                    userData.corporate_name = document.getElementById('corporate_name').value;
+                    userData.legal_representative = document.getElementById('legal_representative').value;
+                }
+
+                try {
+                    // MUDANÇA AQUI: Aponta para o endpoint '/cadastro'
+                    const response = await fetch('http://localhost:8000/cadastro', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert('Usuário cadastrado com sucesso!');
+                        window.location.href = '/'; // Redireciona para a página de login
+                    } else {
+                        alert('Erro ao cadastrar: ' + (data.detail || 'Erro desconhecido.'));
+                        console.error('Erro de cadastro:', data);
+                    }
+                } catch (error) {
+                    console.error('Erro ao conectar com o servidor:', error);
+                    alert('Erro ao conectar com o servidor. Tente novamente mais tarde.');
+                }
+            });
+            // --- FIM DO CÓDIGO JS PARA FORMULÁRIO ---
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="logo">testcaseAI</div>
+    </header>
+
+    <div class="signup-container">
+        <h2>Criar conta gratuita</h2>
+
+        <div class="user-type">
+            <label><input type="radio" name="tipo" value="pf" checked> Pessoa Física</label>
+            <label><input type="radio" name="tipo" value="pj"> Pessoa Jurídica</label>
+        </div>
+
+        <form>
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+
+            <div class="pf-group">
+                <input type="text" id="full_name" placeholder="Nome Completo">
+                <input type="text" id="cpf" placeholder="CPF">
+            </div>
+
+            <div class="pj-group hidden">
+                <input type="text" id="corporate_name" placeholder="Razão Social">
+                <input type="text" id="cnpj" placeholder="CNPJ">
+                <input type="text" id="legal_representative" placeholder="Responsável Legal">
+            </div>
+            
+            <input type="password" id="password" placeholder="Criar Senha" required>
+            <input type="password" id="confirm_password" placeholder="Confirmar Senha" required>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+        <div class="login-link">Já tem conta? <a href="/">Entrar</a></div>
+    </div>
+
+    <footer>
+        &copy; 2023 testcaseAI - Todos os direitos reservados.
+    </footer>
+</body>
+</html>
